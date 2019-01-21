@@ -22,8 +22,8 @@ The following connectivity is expected:
 
 The following software needs to be installed on the attendee's computer:
 
-  * VirtualBox >= 4.3 (https://www.virtualbox.org/wiki/Downloads)
-  * Hardware virtualization enabled. (AMD-V/VT-x) => [Troubleshooting Guide](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Workshop-Troubleshoot-Guide.pdf)
+  * VirtualBox >= 5.2 (https://www.virtualbox.org/wiki/Downloads)
+  * Hardware virtualization enabled. (AMD-V/VT-x) => [Troubleshooting Guide](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Workshop-Troubleshoot-Guide.pdf)
   * Putty and WinSCP (Windows only)
   * A VNC Viewer (https://github.com/TigerVNC/tigervnc/releases)
   * Firefox or Chrome
@@ -38,12 +38,12 @@ The room should provide a video-projector (HDMI, DVI or VGA) & a whiteboard with
 
 Details regarding the setup of the workshop VM can be found here:
 
-* [VMSETUP](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/VMSETUP.md)
+* [VMSETUP](https://github.com/vgasiunas/cb-workshop-2d/blob/master/VMSETUP.md)
 
 You can also directly download the VM and import the Appliance in VirtualBox:  
 Here is the link:  https://drive.google.com/file/d/0B2k_ASGIBGIiN1VJbUUzUnFtUTg/view?usp=sharing
 
-[Troubleshooting Guide](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Workshop-Troubleshoot-Guide.pdf)
+[Troubleshooting Guide](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Workshop-Troubleshoot-Guide.pdf)
 
 ### Alternative to VM (Docker)
 
@@ -57,23 +57,23 @@ docker run -d -p 8091-8094:8091-8094 -p 11210:11210 --name cb1 -v /[FULL_PATH]/c
 ## Slides & Labs
 
 * Day 1.
-  * Slides: [Workshop-Day1-0-Agenda.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-0-Agenda.pdf)
-  * Slides: [Workshop-Day1-1-Introduction.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-1-Introduction.pdf)
-  * Slides: [Workshop-Day1-2-Architecture.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-2-Architecture.pdf)
-  * Slides: [Workshop-Day1-5-Security.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-5-Security.pdf)
-  * Slides: [Workshop-Day1-6-BackupRestore.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-6-BackupRestore.pdf)
-  * Slides: [Workshop-Day1-7-XDCR.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-7-XDCR.pdf)
-  * Slides: [Workshop-Day1-8-FTS.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-8-FTS.pdf)
-  * Labs: [Workshop-Day1-9-Labs.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-9-Labs.pdf)
+  * Slides: [Workshop-Day1-0-Agenda.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-0-Agenda.pdf)
+  * Slides: [Workshop-Day1-1-Introduction.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-1-Introduction.pdf)
+  * Slides: [Workshop-Day1-2-Architecture.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-2-Architecture.pdf)
+  * Slides: [Workshop-Day1-5-Security.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-5-Security.pdf)
+  * Slides: [Workshop-Day1-6-BackupRestore.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-6-BackupRestore.pdf)
+  * Slides: [Workshop-Day1-7-XDCR.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-7-XDCR.pdf)
+  * Slides: [Workshop-Day1-8-FTS.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-8-FTS.pdf)
+  * Labs: [Workshop-Day1-9-Labs.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-9-Labs.pdf)
 
 * Day 2.
-  * Slides: [Workshop-Day2-1-Document Modeling.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-1-Document%20Modeling.pdf)
-  * Slides: [Workshop-Day2-2-Json Data Modeling.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-2-Json%20Data%20Modeling.pdf)
-  * Slides: [Workshop-Day2-3-Indexes.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-3-Indexes.pdf)
-  * Slides: [Workshop-Day2-4-N1QL.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-4-N1QL.pdf)
-  * Slides: [Workshop-Day2-5-FTS.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-5-FTS.pdf)
-  * Labs C: [Workshop-Day2-9-CCCP-Labs.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-9-CCCP-Labs.pdf)
-  * Labs Java: [Workshop-Day2-9-Java-Labs.pdf](https://github.com/dufrenoyl/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-9-Java-Labs.pdf)
+  * Slides: [Workshop-Day2-1-Document Modeling.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-1-Document%20Modeling.pdf)
+  * Slides: [Workshop-Day2-2-Json Data Modeling.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-2-Json%20Data%20Modeling.pdf)
+  * Slides: [Workshop-Day2-3-Indexes.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-3-Indexes.pdf)
+  * Slides: [Workshop-Day2-4-N1QL.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-4-N1QL.pdf)
+  * Slides: [Workshop-Day2-5-FTS.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-5-FTS.pdf)
+  * Labs C: [Workshop-Day2-9-CCCP-Labs.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-9-CCCP-Labs.pdf)
+  * Labs Java: [Workshop-Day2-9-Java-Labs.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-9-Java-Labs.pdf)
 
 ## Resources
 

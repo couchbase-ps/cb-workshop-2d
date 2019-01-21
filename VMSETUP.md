@@ -6,7 +6,7 @@ The VM image is available here (root / couchbase):
 
 ## VirtualBox Settings
 
-> We recommend to install the latest version of VirtualBox. (currently 5.1.30)
+> We recommend to install the latest version of VirtualBox. (the training slides were tested with 5.2.24)
 
 VirtualBox allows to configure various virtual network cards. (https://www.virtualbox.org/manual/ch06.html)
 
