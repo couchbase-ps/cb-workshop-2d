@@ -39,12 +39,6 @@ int main(int argc, char *argv[])
 //    DemoCouchbaseN1ql n1qlDemo;
 //    n1qlDemo.test();
 
-    //Window
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-
-    int applicationresult = a.exec();
-    //CBDataSourceFactory::Instance().Destroy();
-    return applicationresult;
+//    CBDataSourceFactory::Instance().Destroy();
+    return 0;
 }

@@ -13,20 +13,37 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    mainwindow.cpp \
+        mainwindow.cpp \
+    demo/democouchbaseconnect.cpp \
     cbdatasource.cpp \
+    demo/democouchbaseget.cpp \
+    demo/democouchbaseupsert.cpp \
     cbdatasourcefactory.cpp \
+    demo/democouchbasedelete.cpp \
+    demo/democouchbaseincr.cpp \
+    demo/democouchbasemultiget.cpp \
+    demo/democouchbaseview.cpp \
     JsonTableModel.cpp \
     login.cpp \
     usermodel.cpp \
+    demo/democouchbasen1ql.cpp \
     couchbasedocument.cpp
 
 HEADERS  += mainwindow.h \
+    demo/democouchbaseconnect.h \
     cbdatasource.h \
+    demo/democouchbaseget.h \
+    demo/democouchbasebase.h \
+    demo/democouchbaseupsert.h \
     cbdatasourcefactory.h \
+    demo/democouchbasedelete.h \
+    demo/democouchbaseincr.h \
+    demo/democouchbasemultiget.h \
+    demo/democouchbaseview.h \
     JsonTableModel.h \
     login.h \
     usermodel.h \
+    demo/democouchbasen1ql.h \
     cbcookieget.h \
     cbcookieremove.h \
     cbqueryresult.h \

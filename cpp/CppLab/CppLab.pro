@@ -13,7 +13,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    mainwindow.cpp \
     demo/democouchbaseconnect.cpp \
     cbdatasource.cpp \
     demo/democouchbaseget.cpp \
@@ -38,16 +37,12 @@ HEADERS  += mainwindow.h \
     demo/democouchbasemultiget.h \
     demo/democouchbaseview.h \
     demo/democouchbasen1ql.h \
-    mainwindow.h \
     cbcookieget.h \
     cbcookieremove.h \
     cbn1qlresult.h \
     cbqstringconvert.h \
     cbqueryresult.h \
     couchbasedocument.h
-
-FORMS    += \
-    mainwindow.ui
 
 ## Couchbase Options
 CONFIG +=console
