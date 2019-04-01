@@ -1,7 +1,6 @@
 #include <QApplication>
 #include <QDebug>
 #include <stdio.h>
-#include "mainwindow.h"
 #include "demo/democouchbaseconnect.h"
 #include "demo/democouchbaseget.h"
 #include "demo/democouchbaseupsert.h"
@@ -32,9 +31,6 @@ int main(int argc, char *argv[])
 
 //    DemoCouchbaseMultiGet multiGetDemo;
 //    multiGetDemo.test();
-
-//    DemoCouchbaseView viewDemo;
-//    viewDemo.test();
 
 //    DemoCouchbaseN1ql n1qlDemo;
 //    n1qlDemo.test();

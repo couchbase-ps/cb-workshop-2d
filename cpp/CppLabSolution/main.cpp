@@ -1,7 +1,6 @@
 #include <QApplication>
 #include <QDebug>
 #include <stdio.h>
-#include "mainwindow.h"
 #include "demo/democouchbaseconnect.h"
 #include "demo/democouchbaseget.h"
 #include "demo/democouchbaseupsert.h"
@@ -15,32 +14,26 @@ int main(int argc, char *argv[])
 {
     qDebug() << "Starting demo application ...";
 
-    CBDataSourceFactory::Create("couchbase://localhost/travel-sample", QString("application"), QString("couchbase"));
-
     DemoCouchbaseConnect connectDemo;
     connectDemo.test();
 
-    //DemoCouchbaseGet getDemo;
-    //getDemo.test();
+    DemoCouchbaseGet getDemo;
+    getDemo.test();
     
-    //DemoCouchbaseUpsert upsertDemo;
-    //upsertDemo.test();
+    DemoCouchbaseUpsert upsertDemo;
+    upsertDemo.test();
 
-    //DemoCouchbaseDelete deleteDemo;
-    //deleteDemo.test();
+    DemoCouchbaseDelete deleteDemo;
+    deleteDemo.test();
 
+    DemoCouchbaseIncr incrDemo;
+    incrDemo.test();
 
-    //DemoCouchbaseIncr incrDemo;
-    //incrDemo.test();
+    DemoCouchbaseMultiGet multiGetDemo;
+    multiGetDemo.test();
 
-    //DemoCouchbaseMultiGet multiGetDemo;
-    //multiGetDemo.test();
-
-    //DemoCouchbaseView viewDemo;
-    //viewDemo.test();
-
-    //DemoCouchbaseN1ql n1qlDemo;
-    //n1qlDemo.test();
+    DemoCouchbaseN1ql n1qlDemo;
+    n1qlDemo.test();
 
     CBDataSourceFactory::Instance().Destroy();
     return 0;

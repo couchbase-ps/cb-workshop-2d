@@ -2,7 +2,7 @@
 
 CBDataSource CBDataSourceFactory::mInstance;
 
-void CBDataSourceFactory::Create(const QString& connectionString, const QString& password)
+void CBDataSourceFactory::Create(const QString& connectionString, const QString& username, const QString& password)
 {
     //TODO: Excercise 7b - Connect
 }

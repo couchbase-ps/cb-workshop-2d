@@ -25,8 +25,7 @@ SOURCES += main.cpp\
     demo/democouchbasen1ql.cpp \
     couchbasedocument.cpp
 
-HEADERS  += mainwindow.h \
-    demo/democouchbaseconnect.h \
+HEADERS  += demo/democouchbaseconnect.h \
     cbdatasource.h \
     demo/democouchbaseget.h \
     demo/democouchbasebase.h \
