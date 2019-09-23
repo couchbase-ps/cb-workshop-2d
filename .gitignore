@@ -1,0 +1,11 @@
+.DS_*
+*.zip
+*.csv
+*.txt
+.idea*
+target
+*.iml
+.classpath
+.project
+.cproject
+.settings
