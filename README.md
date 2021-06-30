@@ -1,4 +1,4 @@
-# Couchbase Development Workshop - 2 days
+# Couchbase Development Workshop - 2 days for Amadeus
 
 Couchbase is the most powerful NoSQL data platform.
 
