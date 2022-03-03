@@ -1,11 +1,11 @@
 package com.cbworkshop;
 
-import com.couchbase.client.java.Bucket;
-import com.couchbase.client.java.document.JsonDocument;
-import com.couchbase.client.java.document.json.JsonObject;
-import com.couchbase.client.java.query.N1qlQuery;
+import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.json.JsonObject;
 
-import java.util.*;
+import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class MainLab {
 
@@ -22,7 +22,8 @@ public class MainLab {
     public static final String CMD_BULK_WRITE_SYNC = "bulkwritesync";
     public static final String CMD_SEARCH = "search";
 
-    private static Bucket bucket = null;
+    private static Cluster cluster = null;
+    private static Collection collection = null;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -132,47 +133,37 @@ public class MainLab {
         int size = Integer.parseInt(words[1]);
 
         System.out.println("Deleting messages ...");
-        bucket.query(N1qlQuery.simple("DELETE FROM `travel-sample` WHERE type=\"msg\""));
+        cluster.query("DELETE FROM `travel-sample` WHERE type='msg'");
 
-        System.out.println("Writting " + size + " messages");
-        List<JsonDocument> docs = new ArrayList<JsonDocument>();
-        for (int i = 0; i < size; i++) {
-            JsonObject json = JsonObject.create()
-                    .put("timestamp", System.currentTimeMillis())
-                    .put("from", "me")
-                    .put("to", "you")
-                    .put("type", "msg");
-            docs.add(JsonDocument.create("msg::" + i, json));
-        }
+        System.out.printf("Writing %d messages%n", size);
         long ini = System.currentTimeMillis();
-
-        // TODO: Use RxJava to insert all docs
-
-        System.out.println("Time elapsed " + (System.currentTimeMillis() - ini) + " ms");
+        // TODO: Use Reactor to insert all docs
+        IntStream.range(0, size)
+                .forEach(i -> JsonObject.create()
+                        .put("timestamp", System.currentTimeMillis())
+                        .put("from", "me")
+                        .put("to", "you")
+                        .put("type", "msg"));
+        System.out.printf("Time elapsed %d ms%n", System.currentTimeMillis() - ini);
     }
 
     private static void bulkWriteSync(String[] words) {
         int size = Integer.parseInt(words[1]);
 
         System.out.println("Deleting messages ...");
-        bucket.query(N1qlQuery.simple("DELETE FROM `travel-sample` WHERE type=\"msg\""));
+        cluster.query("DELETE FROM `travel-sample` WHERE type='msg'");
 
-        System.out.println("Writting " + size + " messages");
-        List<JsonDocument> docs = new ArrayList<JsonDocument>();
-        for (int i = 0; i < size; i++) {
-            JsonObject json = JsonObject.create()
-                    .put("timestamp", System.currentTimeMillis())
-                    .put("from", "me")
-                    .put("to", "you")
-                    .put("type", "msg");
-            docs.add(JsonDocument.create("msg::" + i, json));
-        }
-
+        System.out.printf("Writing %d messages%n", size);
         long ini = System.currentTimeMillis();
-
         // TODO: Use simple loop to insert all docs
+        IntStream.range(0, size)
+                .forEach(i -> JsonObject.create()
+                        .put("timestamp", System.currentTimeMillis())
+                        .put("from", "me")
+                        .put("to", "you")
+                        .put("type", "msg"));
 
-        System.out.println("Time elapsed " + (System.currentTimeMillis() - ini) + " ms");
+        System.out.printf("Time elapsed %d ms%n", System.currentTimeMillis() - ini);
     }
 
     private static void search(String[] words) {

@@ -1,22 +1,25 @@
 package com.cbworkshop;
 
-import com.couchbase.client.core.message.kv.subdoc.multi.Mutation;
-import com.couchbase.client.java.*;
-import com.couchbase.client.java.document.JsonDocument;
-import com.couchbase.client.java.document.json.JsonObject;
-import com.couchbase.client.java.env.CouchbaseEnvironment;
-import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
+import com.couchbase.client.core.env.TimeoutConfig;
+import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.env.ClusterEnvironment;
+import com.couchbase.client.java.json.JsonObject;
+import com.couchbase.client.java.kv.GetResult;
+import com.couchbase.client.java.kv.MutateInSpec;
 import com.couchbase.client.java.query.*;
 import com.couchbase.client.java.search.SearchQuery;
 import com.couchbase.client.java.search.queries.MatchQuery;
-import com.couchbase.client.java.search.result.SearchQueryResult;
-import com.couchbase.client.java.search.result.SearchQueryRow;
-import com.couchbase.client.java.subdoc.DocumentFragment;
-import rx.Observable;
+import com.couchbase.client.java.search.result.SearchResult;
+import com.couchbase.client.java.search.result.SearchRow;
+import reactor.core.publisher.Flux;
 
-import java.util.*;
+import java.time.Duration;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.IntStream;
 
-import static com.couchbase.client.java.query.Select.select;
+import static com.couchbase.client.java.ClusterOptions.clusterOptions;
 
 public class MainLab {
 
@@ -33,7 +36,8 @@ public class MainLab {
     public static final String CMD_BULK_WRITE_SYNC = "bulkwritesync";
     public static final String CMD_SEARCH = "search";
 
-    private static Bucket bucket = null;
+    private static Cluster cluster = null;
+    private static Collection collection = null;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -59,15 +63,16 @@ public class MainLab {
         String password = System.getProperty("cbworkshop.password");
         String bucketName = System.getProperty("cbworkshop.bucket");
 
-        CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
-                .socketConnectTimeout(15000)
-                .connectTimeout(15000)
-                .kvTimeout(15000)
+        ClusterEnvironment env = ClusterEnvironment.builder()
+                .timeoutConfig(TimeoutConfig
+                        .connectTimeout(Duration.ofSeconds(15))
+                        .kvTimeout(Duration.ofSeconds(15)))
                 .build();
 
-        Cluster cluster = CouchbaseCluster.create(env, clusterAddress);
-        cluster.authenticate(user, password);
-        bucket = cluster.openBucket(bucketName);
+        cluster = Cluster.connect(clusterAddress,
+                clusterOptions(user, password)
+                        .environment(env));
+        collection = cluster.bucket(bucketName).defaultCollection();
     }
 
     private static void process(String cmdLn) {
@@ -127,81 +132,70 @@ public class MainLab {
                 .put("from", from)
                 .put("to", to)
                 .put("type", "msg");
-        bucket.insert(JsonDocument.create(key, json));
-        //bucket.upsert(JsonDocument.create(key, json));
+        collection.insert(key, json);
+        //collection.upsert(key, json);
         System.out.println("Document created with key: " + key);
     }
 
     private static void read(String[] words) {
         String key = words[1];
-        JsonDocument doc = bucket.get(key);
-        System.out.println(doc.content().toString());
+        GetResult result = collection.get(key);
+        System.out.println(result.contentAsObject().toString());
     }
 
     private static void update(String[] words) {
         String key = "airline_" + words[1];
-        JsonDocument doc = bucket.get(key);
-        String name = doc.content().getString("name");
-        doc.content().put("name", name.toUpperCase());
-        bucket.replace(doc);
+        GetResult result = collection.get(key);
+        JsonObject doc = result.contentAsObject();
+        String name = doc.getString("name");
+        doc.put("name", name.toUpperCase());
+        collection.replace(key, doc);
     }
 
     private static void subdoc(String[] words) {
         String key = "msg::" + words[1];
-        DocumentFragment<Mutation> result = bucket
-                .mutateIn(key)
-                .replace("from", "Administrator")
-                .insert("reviewed", System.currentTimeMillis())
-                .execute();
+        collection
+                .mutateIn(key, List.of(
+                        MutateInSpec.replace("from", "Administrator"),
+                        MutateInSpec.insert("reviewed", System.currentTimeMillis())
+                ));
     }
 
     private static void delete(String[] words) {
         String key = "msg::" + words[1];
-        bucket.remove(key);
+        collection.remove(key);
     }
 
     private static void query(String[] words) {
-        //N1qlQueryResult queryResult = bucket.query(N1qlQuery.simple("SELECT * FROM `travel-sample` LIMIT 10"));
-        N1qlQueryResult queryResult = bucket.query(select("*").from("`travel-sample`").limit(10));
-        for (N1qlQueryRow row : queryResult) {
-            System.out.println(row.value().toString());
+        QueryResult queryResult = cluster.query("SELECT * FROM `travel-sample` LIMIT 10");
+        for (JsonObject row : queryResult.rowsAsObject()) {
+            System.out.println(row.toString());
         }
     }
 
     private static void queryAsync(String[] words) {
 
-        bucket.async()
-                .query(N1qlQuery.simple(select("*").from("`travel-sample`").limit(5)))
-                .subscribe(result -> {
-                    result.errors()
-                            .subscribe(
-                                    e -> System.err.println("N1QL Error/Warning: " + e),
-                                    runtimeError -> runtimeError.printStackTrace()
-                            );
-                    result.rows()
-                            .map(row -> row.value())
-                            .subscribe(
-                                    rowContent -> System.out.println(rowContent),
-                                    runtimeError -> runtimeError.printStackTrace()
-                            );
-                });
+        cluster.reactive()
+                .query("SELECT * FROM `travel-sample` LIMIT 5")
+                .flatMapMany(ReactiveQueryResult::rowsAsObject)
+                .subscribe(row -> System.out.println(row.toString()),
+                        e -> System.err.println("N1QL Error/Warning: " + e));
+
     }
 
     private static void queryAirports(String[] words) {
         String sourceairport = words[1];
         String destinationairport = words[2];
         String queryStr = "SELECT a.name FROM `travel-sample` r JOIN `travel-sample` a ON KEYS r.airlineid " +
-                "WHERE r.type=\"route\" AND r.sourceairport=$src AND r.destinationairport=$dst";
+                "WHERE r.type='route' AND r.sourceairport=$src AND r.destinationairport=$dst";
 
         JsonObject params = JsonObject.create()
                 .put("src", sourceairport)
                 .put("dst", destinationairport);
 
-        N1qlQuery query = N1qlQuery.parameterized(queryStr, params, N1qlParams.build().adhoc(false));
-
-        N1qlQueryResult queryResult = bucket.query(query);
-        for (N1qlQueryRow row : queryResult) {
-            System.out.println(row.value().toString());
+        QueryResult queryResult = cluster.query(queryStr, QueryOptions.queryOptions().parameters(params));
+        for (JsonObject row : queryResult.rowsAsObject()) {
+            System.out.println(row.toString());
         }
     }
 
@@ -209,26 +203,18 @@ public class MainLab {
         int size = Integer.parseInt(words[1]);
 
         System.out.println("Deleting messages ...");
-        bucket.query(N1qlQuery.simple("DELETE FROM `travel-sample` WHERE type=\"msg\""));
+        cluster.query("DELETE FROM `travel-sample` WHERE type='msg'");
 
-        System.out.println("Writting " + size + " messages");
-        List<JsonDocument> docs = new ArrayList<JsonDocument>();
-        for (int i = 0; i < size; i++) {
-            JsonObject json = JsonObject.create()
-                    .put("timestamp", System.currentTimeMillis())
-                    .put("from", "me")
-                    .put("to", "you")
-                    .put("type", "msg");
-            docs.add(JsonDocument.create("msg::" + i, json));
-        }
+        System.out.printf("Writing %d messages%n", size);
         long ini = System.currentTimeMillis();
-        Observable
-                .from(docs)
-                .flatMap(doc -> bucket.async().insert(doc))
-                .last()
-                .toBlocking()
-                .single();
-        System.out.println("Time elapsed " + (System.currentTimeMillis() - ini) + " ms");
+        Flux.range(0, size)
+                .flatMap(i -> collection.reactive().insert("msg::" + i, JsonObject.create()
+                        .put("timestamp", System.currentTimeMillis())
+                        .put("from", "me")
+                        .put("to", "you")
+                        .put("type", "msg")))
+                .blockFirst();
+        System.out.printf("Time elapsed %d ms%n", System.currentTimeMillis() - ini);
     }
 
     private static void bulkWriteSync(String[] words) {
@@ -236,30 +222,25 @@ public class MainLab {
         int size = Integer.parseInt(words[1]);
 
         System.out.println("Deleting messages ...");
-        bucket.query(N1qlQuery.simple("DELETE FROM `travel-sample` WHERE type=\"msg\""));
+        cluster.query("DELETE FROM `travel-sample` WHERE type='msg'");
 
-        System.out.println("Writting " + size + " messages");
-        List<JsonDocument> docs = new ArrayList<JsonDocument>();
-        for (int i = 0; i < size; i++) {
-            JsonObject json = JsonObject.create()
-                    .put("timestamp", System.currentTimeMillis())
-                    .put("from", "me")
-                    .put("to", "you")
-                    .put("type", "msg");
-            docs.add(JsonDocument.create("msg::" + i, json));
-        }
+        System.out.printf("Writing %d messages%n", size);
         long ini = System.currentTimeMillis();
-        for (JsonDocument doc : docs) {
-            bucket.insert(doc);
-        }
-        System.out.println("Time elapsed " + (System.currentTimeMillis() - ini) + " ms");
+        IntStream.range(0, size)
+                .forEach(i -> collection.insert("msg::" + i, JsonObject.create()
+                        .put("timestamp", System.currentTimeMillis())
+                        .put("from", "me")
+                        .put("to", "you")
+                        .put("type", "msg")));
+
+        System.out.printf("Time elapsed %d ms%n", System.currentTimeMillis() - ini);
     }
 
     private static void search(String[] words) {
         String term = words[1];
         MatchQuery fts = SearchQuery.match(term);
-        SearchQueryResult result = bucket.query(new SearchQuery("sidx_hotel_desc", fts));
-        for (SearchQueryRow row : result) {
+        SearchResult result = cluster.searchQuery("sidx_hotel_desc", fts);
+        for (SearchRow row : result.rows()) {
             System.out.println(row);
         }
     }
