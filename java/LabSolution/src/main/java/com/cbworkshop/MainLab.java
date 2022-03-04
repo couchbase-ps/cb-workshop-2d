@@ -1,6 +1,7 @@
 package com.cbworkshop;
 
 import com.couchbase.client.core.env.TimeoutConfig;
+import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.env.ClusterEnvironment;
@@ -15,11 +16,11 @@ import com.couchbase.client.java.search.result.SearchRow;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static com.couchbase.client.java.ClusterOptions.clusterOptions;
+import static com.couchbase.client.java.query.QueryOptions.queryOptions;
 
 public class MainLab {
 
@@ -30,7 +31,7 @@ public class MainLab {
     public static final String CMD_SUBDOC = "subdoc";
     public static final String CMD_DELETE = "delete";
     public static final String CMD_QUERY = "query";
-    public static final String CMD_QUERY_ASYNC = "queryasync";
+    public static final String CMD_QUERY_REACTIVE = "queryreactive";
     public static final String CMD_QUERY_AIRPORTS = "queryairports";
     public static final String CMD_BULK_WRITE = "bulkwrite";
     public static final String CMD_BULK_WRITE_SYNC = "bulkwritesync";
@@ -100,8 +101,8 @@ public class MainLab {
             case CMD_QUERY:
                 query(words);
                 break;
-            case CMD_QUERY_ASYNC:
-                queryAsync(words);
+            case CMD_QUERY_REACTIVE:
+                queryReactive(words);
                 break;
             case CMD_QUERY_AIRPORTS:
                 queryAirports(words);
@@ -139,8 +140,13 @@ public class MainLab {
 
     private static void read(String[] words) {
         String key = words[1];
-        GetResult result = collection.get(key);
-        System.out.println(result.contentAsObject().toString());
+        GetResult result = null;
+        try {
+            result = collection.get(key);
+            System.out.println(result.contentAsObject().toString());
+        } catch (DocumentNotFoundException e) {
+            System.out.printf("Document with key: %s not found%n", key);
+        }
     }
 
     private static void update(String[] words) {
@@ -163,7 +169,11 @@ public class MainLab {
 
     private static void delete(String[] words) {
         String key = "msg::" + words[1];
-        collection.remove(key);
+        try {
+            collection.remove(key);
+        } catch (DocumentNotFoundException e) {
+            System.out.printf("Document with key: %s not found%n", key);
+        }
     }
 
     private static void query(String[] words) {
@@ -173,7 +183,7 @@ public class MainLab {
         }
     }
 
-    private static void queryAsync(String[] words) {
+    private static void queryReactive(String[] words) {
 
         cluster.reactive()
                 .query("SELECT * FROM `travel-sample` LIMIT 5")
@@ -193,7 +203,7 @@ public class MainLab {
                 .put("src", sourceairport)
                 .put("dst", destinationairport);
 
-        QueryResult queryResult = cluster.query(queryStr, QueryOptions.queryOptions().parameters(params));
+        QueryResult queryResult = cluster.query(queryStr, queryOptions().parameters(params));
         for (JsonObject row : queryResult.rowsAsObject()) {
             System.out.println(row.toString());
         }
@@ -213,7 +223,7 @@ public class MainLab {
                         .put("from", "me")
                         .put("to", "you")
                         .put("type", "msg")))
-                .blockFirst();
+                .blockLast();
         System.out.printf("Time elapsed %d ms%n", System.currentTimeMillis() - ini);
     }
 
@@ -254,7 +264,7 @@ public class MainLab {
         System.out.println("Usage options: \n\n" + CMD_CREATE + " [key from to] \n" + CMD_READ + " [key] \n"
                 + CMD_UPDATE + " [airline_key] \n" + CMD_SUBDOC + " [msg_key] \n" + CMD_DELETE + " [msg_key] \n"
                 + CMD_QUERY + " \n" + CMD_QUERY_AIRPORTS + " [sourceairport destinationairport] \n"
-                + CMD_QUERY_ASYNC + " \n" + CMD_BULK_WRITE + " [size] \n" + CMD_BULK_WRITE_SYNC + " [size] \n"
+                + CMD_QUERY_REACTIVE + " \n" + CMD_BULK_WRITE + " [size] \n" + CMD_BULK_WRITE_SYNC + " [size] \n"
                 + CMD_SEARCH + " [term] \n" + CMD_QUIT);
     }
 
