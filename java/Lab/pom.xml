@@ -35,6 +35,44 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.cbworkshop.MainLab</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.cbworkshop.MainLab</mainClass>
+					<systemProperties>
+<!--						<systemProperty>-->
+<!--							<key>cbworkshop.clusteraddress</key>-->
+<!--							<value>couchbase</value>-->
+<!--						</systemProperty>-->
+						<systemProperty>
+							<key>cbworkshop.user</key>
+							<value>travel</value>
+						</systemProperty>
+						<systemProperty>
+							<key>cbworkshop.password</key>
+							<value>couchbase</value>
+						</systemProperty>
+						<systemProperty>
+							<key>cbworkshop.bucket</key>
+							<value>travel-sample</value>
+						</systemProperty>
+					</systemProperties>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>		
 </project>

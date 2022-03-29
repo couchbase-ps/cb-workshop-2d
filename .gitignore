@@ -9,3 +9,5 @@ target
 .project
 .cproject
 .settings
+.m2/
+data/

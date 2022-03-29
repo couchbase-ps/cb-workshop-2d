@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  couchbase:
+    image: couchbase
+    ports:
+      - "8091-8096:8091-8096"
+      - "18091-18096:18091-18096"
+      - "11210-11211:11210-11211"
+    volumes:
+      - ./data:/opt/couchbase/var
+  java-lab:
+    image: openjdk:11
+    container_name: java-lab
+    volumes:
+      - ./java/Lab:/root
+    working_dir: /root
+    command: ./mvnw compile exec:java -Dcbworkshop.clusteraddress=couchbase
+    stdin_open: true
+    tty: true
