@@ -20,7 +20,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "try-cb-lcb.h"
+#include "try-cb-lcb-labs.h"
 #include "util.h"
 
 #define             NUM_SUBDOC_PATHS 6

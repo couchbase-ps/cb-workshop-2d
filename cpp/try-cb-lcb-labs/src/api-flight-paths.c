@@ -22,7 +22,7 @@
 
 #include <math.h>
 
-#include "try-cb-lcb.h"
+#include "try-cb-lcb-labs.h"
 #include "util.h"
 
 typedef struct tcblcb_FlightPathResults {

@@ -20,7 +20,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "try-cb-lcb.h"
+#include "try-cb-lcb-labs.h"
 #include "util.h"
 
 static void airports_query_callback(__unused lcb_INSTANCE *instance, __unused int type, const lcb_RESPQUERY *resp)

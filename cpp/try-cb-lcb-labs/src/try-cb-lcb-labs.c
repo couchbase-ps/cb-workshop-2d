@@ -20,7 +20,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "try-cb-lcb.h"
+#include "try-cb-lcb-labs.h"
 #include "util.h"
 
 #if defined(__linux__)
@@ -29,7 +29,7 @@
 // syscalls required by libcouchbase
 // See https://docs.kore.io/4.1.0/api/seccomp.html
 // List of syscalls retrieved by running with `seccomp_tracing yes` in config.
-KORE_SECCOMP_FILTER("try-cb-lcb",
+KORE_SECCOMP_FILTER("try-cb-lcb-labs",
     KORE_SYSCALL_ALLOW(getgid),
     KORE_SYSCALL_ALLOW(getegid),
     KORE_SYSCALL_ALLOW(epoll_create1),
