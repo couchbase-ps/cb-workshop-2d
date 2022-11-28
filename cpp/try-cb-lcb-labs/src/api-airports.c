@@ -157,7 +157,7 @@ int tcblcb_api_airports(struct http_request *req)
         "Failed to set query command statement"
     );
     IfLCBFailGotoDone(
-        lcb_cmdquery_positional_param(cmd, params_string, strlen(params_string)),
+        lcb_cmdquery_positional_params(cmd, params_string, strlen(params_string)),
         "Failed to set query command positional parameters"
     );
     IfLCBFailGotoDone(

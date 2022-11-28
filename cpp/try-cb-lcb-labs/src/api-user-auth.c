@@ -28,7 +28,7 @@
 static const unsigned char JWT_SECRET_STRING[] = "cbtravelsample";
 static const size_t        JWT_SECRET_STRLEN = sizeof(JWT_SECRET_STRING) - 1;
 
-static const char   USERS_COLL_STRING[] = "users";
+static const char   USERS_COLL_STRING[] = "_default";
 static const size_t USERS_COLL_STRLEN = sizeof(USERS_COLL_STRING) - 1;
 
 __unused static const char   UNAME_KEY_STRING[] = "user";
@@ -253,6 +253,10 @@ static lcb_STATUS insert_user(tcblcb_UserAuthParams *auth_params)
         cJSON_AddStringToObject(user_json, PWORD_KEY_STRING, auth_params->password),
         "Failed to add `password` to JWT payload"
     );
+    /*IfNULLGotoDone(
+        cJSON_AddStringToObject(user_json, "type", "user"),
+	    "Failed ot add `type` to JWT payload"
+    );*/
     user_json_string = cJSON_PrintUnformatted(user_json);
 
     // LAB - Insert - Create the command
@@ -273,6 +277,9 @@ static lcb_STATUS insert_user(tcblcb_UserAuthParams *auth_params)
     // );
     // ============ End CB 7 Only ==========
     // LAB - Insert - Set the document ID
+    // char* username = (char *)malloc(strlen(auth_params->username)+5);
+    // strncpy(username,"user_\0",6); 
+    // strncat(username,auth_params->username,strlen(auth_params->username)); 
     // IfLCBFailGotoDone(
     //     lcb_cmdstore_key(cmd, auth_params->username, strlen(auth_params->username)),
     //     "Failed to set store command user key"

@@ -309,7 +309,7 @@ void kore_worker_teardown()
 int tcblcb_page_index(struct http_request *req)
 {
     const char body[] = "<h1> Kore.io Travel Sample API </h1>"
-    "A sample API for getting started with Couchbase Server that demonstrates using the <a href=\"https://docs.couchbase.com/c-sdk/current/hello-world/start-using-sdk.html\">C SDK</a> with the <a href=\"https://kore.io/\">Kore.io</a> framework to create a RESTful service API."
+    "A sample API for getting started with Couchbase Server 6.6.5 that demonstrates using the <a href=\"https://docs.couchbase.com/c-sdk/current/hello-world/start-using-sdk.html\">C SDK</a> with the <a href=\"https://kore.io/\">Kore.io</a> framework to create a RESTful service API."
     "<ul>"
     "<li> <a href = \"/apidocs\"> Learn the API with Swagger, interactively </a>"
     "<li> <a href = \"https://github.com/couchbaselabs/try-cb-lcb\"> GitHub </a>"
