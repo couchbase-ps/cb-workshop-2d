@@ -58,6 +58,8 @@ static const char   DEFAULT_PSWD_STRING[]   = "password";
 static const size_t DEFAULT_PSWD_STRLEN     = sizeof(DEFAULT_PSWD_STRING) - 1;
 static const char   TRAVEL_BUCKET_STRING[]  = "travel-sample";
 static const size_t TRAVEL_BUCKET_STRLEN    = sizeof(TRAVEL_BUCKET_STRING) - 1;
+static const char   APPLICATION_USER_STRING[]   = "application";
+static const size_t APPLICATION_USER_STRLEN     = sizeof(APPLICATION_USER_STRING) - 1;
 
 static const char   ENV_CB_SCHEME[] = "CB_SCHEME";
 static const char   ENV_CB_HOST[]   = "CB_HOST";
@@ -68,13 +70,23 @@ static const char  *_cb_scheme_string = DEFAULT_SCHEME_STRING;
 static size_t       _cb_scheme_strlen = DEFAULT_SCHEME_STRLEN;
 static const char  *_cb_host_string   = DEFAULT_HOST_STRING;
 static size_t       _cb_host_strlen   = DEFAULT_HOST_STRLEN;
-static const char  *_cb_user_string   = DEFAULT_USER_STRING;
-static size_t       _cb_user_strlen   = DEFAULT_USER_STRLEN;
+static const char  *_cb_user_string   = APPLICATION_USER_STRING;
+static size_t       _cb_user_strlen   = APPLICATION_USER_STRLEN;
 static const char  *_cb_pswd_string   = DEFAULT_PSWD_STRING;
 static size_t       _cb_pswd_strlen   = DEFAULT_PSWD_STRLEN;
 
 static const char * _cb_conn_string = NULL;
 static size_t       _cb_conn_strlen = 0;
+
+// for testing get
+static const char   RSPMSG_REQ_ERROR_STRING[] = "{\"message\":"
+                    " \"Error Calling Test Get\"}";
+static const size_t RSPMSG_REQ_ERROR_STRLEN = sizeof(RSPMSG_REQ_ERROR_STRING) - 1;
+
+typedef struct tcblcb_TestGetResult {
+    lcb_STATUS status;
+    char *response;
+} tcblcb_TestGetResult;
 
 static void open_callback(__unused lcb_INSTANCE *instance, lcb_STATUS rc)
 {
@@ -212,7 +224,7 @@ void kore_parent_configure(__unused int argc, __unused char *argv[])
 void kore_worker_configure()
 {
     bool connected = false;
-
+    lcb_STATUS connection_status;
     // LAB - Couchbase bootstrap - Configure the connection
     // lcb_CREATEOPTS *create_options = NULL;
     // lcb_createopts_create(&create_options, LCB_TYPE_CLUSTER);
@@ -270,7 +282,7 @@ void kore_worker_configure()
     // LAB - Couchbase bootstrap - Open bucket
     // schedule an open bucket operation
     // IfLCBFailGotoDone(
-    //     lcb_open(_tcblcb_lcb_instance, TRAVEL_BUCKET_STRING, TRAVEL_BUCKET_STRLEN),
+    //     connection_status = lcb_open(_tcblcb_lcb_instance, TRAVEL_BUCKET_STRING, TRAVEL_BUCKET_STRLEN),
     //     "Failed to schedule the open bucket operation"
     // );
 
@@ -279,13 +291,14 @@ void kore_worker_configure()
         lcb_wait(_tcblcb_lcb_instance, LCB_WAIT_DEFAULT),
         "Open bucket operation failed"
     );
-
+    
     connected = true;
 
 done:
     if (!connected) {
         destroy_cb_instance();
     }
+    kore_log(LOG_NOTICE, "LCB connection attempt complete with status: (%d) %s", connection_status, lcb_strerror_long(connection_status));
 }
 
 void kore_worker_teardown()
@@ -303,5 +316,175 @@ int tcblcb_page_index(struct http_request *req)
     "</ul>";
 
     http_response(req, 200, body, sizeof(body));
+    return (KORE_RESULT_OK);
+}
+
+
+// Test Connection - get airline_10
+// called from a global callback and should not reference any other locals
+static void test_get_airline_callback(__unused lcb_INSTANCE *instance, void *cookie, const lcb_RESPGET *resp)
+{
+    tcblcb_TestGetResult *result = (tcblcb_TestGetResult *)cookie;
+    size_t result_len;
+    const char *value;
+    IfNULLGotoDone(
+        cookie,
+        "Test get airline result cookie was NULL"
+    );
+
+    IfLCBFailGotoDone(
+        (result->status = lcb_respget_status(resp)),
+        "Test get airline operation failed"
+    );
+    lcb_respget_value(resp, &value, &result_len);
+    result->response =  (char*)malloc(result_len);
+    strncpy(result->response, value,result_len);
+    result->response[result_len-1] = '\0';
+    kore_log(LOG_NOTICE,"Got test value from Server for airline_10: %s\n", result->response);
+
+done:
+    // no clean up to do in this block
+    return;
+}
+
+static tcblcb_TestGetResult test_get_airline(lcb_INSTANCE *instance )
+{
+    tcblcb_TestGetResult results;
+    results.status = LCB_ERR_GENERIC;
+    results.response = NULL;
+    lcb_CMDGET *cmd = NULL;
+    tcblcb_RESPDELEGATE *get_delegate = NULL;
+    bool cmd_scheduled = false;
+
+    // LAB - Get - Create Command
+    IfLCBFailGotoDone(
+         lcb_cmdget_create(&cmd),
+         "Failed to create get command"
+     );
+
+    // LAB - Get document - Specify the Document ID
+    IfLCBFailGotoDone(
+         lcb_cmdget_key(cmd, "airline_10", 10),
+         "Failed to set document key"
+     );
+
+    LogDebug("%s","Get airline_10 via get command.");
+
+    // receiver is responsible for freeing this memory if command is scheduled
+    get_delegate = malloc(sizeof(tcblcb_RESPDELEGATE));
+    get_delegate->cookie = (void*)&results;
+    get_delegate->callback = (tcblcb_RESPDELEGATE_CALLBACK)test_get_airline_callback;
+    // LAB - Get document - Run get operation
+    IfLCBFailGotoDone(
+        lcb_get(instance, get_delegate, cmd),
+        "Failed to schedule get command"
+    )
+
+    cmd_scheduled = true;
+
+done:
+
+    if (cmd != NULL) {
+        IfLCBFailLogWarningMsg(
+            lcb_cmdget_destroy(cmd),
+            "Failed to destroy get command"
+        );
+    }
+
+    if (cmd_scheduled) {
+        IfLCBFailLogWarningMsg(
+            lcb_wait(instance, LCB_WAIT_DEFAULT),
+            "Failed to complete get command"
+        );
+    } else {
+        // free memory if command was not scheduled
+        if (get_delegate != NULL) {
+            free(get_delegate);
+        }
+    }
+
+    return results;
+}
+
+int tcblcb_api_test_get(struct http_request *req)
+{
+    ProcessCORSAndExitIfPreflight(req);
+
+    tcblcb_HTTPResponse hresp;
+    hresp.status = 400;
+    hresp.string = RSPMSG_REQ_ERROR_STRING;
+    hresp.strlen = RSPMSG_REQ_ERROR_STRLEN;
+
+    struct kore_buf *context_buf = NULL;
+
+    cJSON *response_json = NULL;
+    char *response_string = NULL;
+    size_t response_strlen = 0;
+
+    tcblcb_TestGetResult test_get_result = test_get_airline(_tcblcb_lcb_instance);
+    kore_log(LOG_NOTICE,"Got value from function: %s\n", test_get_result.response);
+    lcb_STATUS pword_status = test_get_result.status;
+
+    LogDebug("Test Get Status: (%d) %s", pword_status, lcb_strerror_long(pword_status));
+    if (pword_status == LCB_SUCCESS) {
+        
+        // note that if we fail to prepare a JSON response we could have an edge case where
+        // the insert actually succeeded but an error will still be returned 
+        hresp.status = 500;
+        hresp.string = RSPMSG_REQ_ERROR_STRING;
+        hresp.strlen = RSPMSG_REQ_ERROR_STRLEN;
+
+        context_buf = kore_buf_alloc(BUFSIZ);
+        kore_buf_appendf(context_buf, "%s", test_get_result.response);
+
+        size_t context_strlen;
+        char *context_string = kore_buf_stringify(context_buf, &context_strlen);
+
+        // create main response object
+        response_json = cJSON_CreateObject();
+        // add data to response object
+        // add context to response object
+        cJSON *context_array = cJSON_AddArrayToObject(response_json, "context");
+        IfNULLGotoDone(context_array, "Failed to create response context array");
+        IfFalseGotoDone(
+            cJSON_AddItemToArray(context_array, cJSON_CreateStringReference(context_string)),
+            "Failed to add response context string to array"
+        );
+
+        response_string = cJSON_PrintBuffered(response_json, BUFSIZ, FMT_RESPONSE);
+        response_strlen = strlen(response_string);
+        IfTrueGotoDone(
+            (response_string == NULL || response_strlen == 0),
+            "Unable to create response JSON string"
+        );
+
+        hresp.status = 200;
+        hresp.string = response_string;
+        hresp.strlen = response_strlen;
+    } else if (pword_status == LCB_ERR_DOCUMENT_NOT_FOUND) {
+        hresp.status = 401;
+        hresp.string = RSPMSG_REQ_ERROR_STRING;
+        hresp.strlen = RSPMSG_REQ_ERROR_STRLEN;
+    } else {
+        hresp.status = 500;
+        hresp.string = RSPMSG_REQ_ERROR_STRING;
+        hresp.strlen = RSPMSG_REQ_ERROR_STRLEN;
+    }
+
+done:
+    http_response(req, hresp.status, hresp.string, hresp.strlen);
+
+    if (context_buf != NULL) {
+        kore_buf_free(context_buf);
+    }
+
+    if (response_string != NULL) {
+        free(response_string);
+    }
+    
+    if (response_json != NULL) {
+        cJSON_Delete(response_json);
+    }
+
     return (KORE_RESULT_OK);
 }
