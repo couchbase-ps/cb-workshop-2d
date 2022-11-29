@@ -22,60 +22,49 @@ The following connectivity is expected:
 
 The following software needs to be installed on the attendee's computer:
 
-  * VirtualBox >= 5.2 (https://www.virtualbox.org/wiki/Downloads)
-  * Hardware virtualization enabled. (AMD-V/VT-x) => [Troubleshooting Guide](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Workshop-Troubleshoot-Guide.pdf)
-  * Putty and WinSCP (Windows only)
-  * A VNC Viewer (https://github.com/TigerVNC/tigervnc/releases)
-  * Firefox or Chrome
+  * Docker
+  * Firefox or Chrome or Safari
 
-The attendee should have all required permissions to create Virtual Machines and Virtual Machine networks on his box.
+The attendee should have all required permissions to install and run Docker.
 
 ### Room Facilities
 
 The room should provide a video-projector (HDMI, DVI or VGA) & a whiteboard with eraser & pens.
 
-## VM Setup
+### Docker Steup
 
-Details regarding the setup of the workshop VM can be found here:
+You can run Couchbase inside a Docker container with a 1 node pre-configured cluster using the following command:
 
-* [VMSETUP](https://github.com/vgasiunas/cb-workshop-2d/blob/master/VMSETUP.md)
-
-You can also directly download the VM and import the Appliance in VirtualBox:  
-Here is the link:  https://drive.google.com/file/d/0B2k_ASGIBGIiN1VJbUUzUnFtUTg/view?usp=sharing
-
-[Troubleshooting Guide](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Workshop-Troubleshoot-Guide.pdf)
-
-### Alternative to VM (Docker)
-
-In case that you have issues running the VM you could run a Docker container  with a 1 node cluster using the following command:
-
-```
-docker run -d -p 8091-8094:8091-8094 -p 11210:11210 --name cb1 -v /[FULL_PATH]/cb1:/opt/couchbase/var couchbase
+```bash
+docker run -d -p 8091-8094:8091-8094 -p 11210:11210 --name couchbase couchbase/server-sandbox:6.6.5
 ```
 
-> Note that the [FULL_PATH] is a real path on your host machine e.g. /tmp/couchbase
+Or run the C/Java labs by using the following command after changing dir to `java` or `cpp` directory:
+
+```bash
+docker-compose up --build -d
+```
+
 ## Slides & Labs
 
 * Day 1.
-  * Slides: [Workshop-Day1-0-Agenda.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-0-Agenda.pdf)
-  * Slides: [Workshop-Day1-1-Introduction.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-1-Introduction.pdf)
-  * Slides: [Workshop-Day1-2-Architecture.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-2-Architecture.pdf)
-  * Slides: [Workshop-Day1-5-Security.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-5-Security.pdf)
-  * Slides: [Workshop-Day1-6-BackupRestore.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-6-BackupRestore.pdf)
-  * Slides: [Workshop-Day1-7-XDCR.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-7-XDCR.pdf)
-  * Slides: [Workshop-Day1-8-FTS.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-8-FTS.pdf)
-  * Labs: [Workshop-Day1-9-Labs.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day1/Workshop-Day1-9-Labs.pdf)
+  * Slides: [Workshop-Day1-0-Agenda.pdf](slides/Day1/Workshop-Day1-0-Agenda.pdf)
+  * Slides: [Workshop-Day1-1-Introduction.pdf](slides/Day1/Workshop-Day1-1-Introduction.pdf)
+  * Slides: [Workshop-Day1-2-Architecture.pdf](slides/Day1/Workshop-Day1-2-Architecture.pdf)
+  * Slides: [Workshop-Day1-3-Security.pdf](slides/Day1/Workshop-Day1-3-Security.pdf)
+  * Slides: [Workshop-Day1-4-HAandDR.pdf](slides/Day1/Workshop-Day1-4-HAandDR.pdf)
+  * Labs: [Workshop-Day1-5-Labs](slides/Day1/Workshop-Day1-5-Labs)
 
 * Day 2.
-  * Slides: [Workshop-Day2-1-Document Modeling.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-1-Document%20Modeling.pdf)
-  * Slides: [Workshop-Day2-2-Json Data Modeling.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-2-Json%20Data%20Modeling.pdf)
-  * Slides: [Workshop-Day2-3-Indexes.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-3-Indexes.pdf)
-  * Slides: [Workshop-Day2-4-N1QL.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-4-N1QL.pdf)
-  * Slides: [Workshop-Day2-5-FTS.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-5-FTS.pdf)
-  * Labs C: [Workshop-Day2-9-CCCP-Labs.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-9-CCCP-Labs.pdf)
-  * Labs Java: [Workshop-Day2-9-Java-Labs.pdf](https://github.com/vgasiunas/cb-workshop-2d/blob/master/slides/Day2/Workshop-Day2-9-Java-Labs.pdf)
+  * Slides: [Workshop-Day2-1-Data Modeling.pdf](slides/Day2/Workshop-Day2-1-Data Modeling.pdf)
+  * Slides: [Workshop-Day2-2-Whats new in Couchbase 6.6.pdf](slides/Day2/Workshop-Day2-2-Whats new in Couchbase 6.6.pdf)
+  * Slides: [Workshop-Day2-3-N1QL.pdf](slides/Day2/Workshop-Day2-3-N1QL.pdf)
+  * Slides: [Workshop-Day2-4-FTS.pdf](slides/Day2/Workshop-Day2-4-FTS.pdf)
+  * Slides: [Workshop-Day2-5-N1QL-Labs.pdf](slides/Day2/Workshop-Day2-5-N1QL-Labs.pdf)
+  * Labs C: [Workshop-Day2-6-CCPP-Labs.pdf](slides/Day2/Workshop-Day2-6-CCPP-Labs.pdf)
+  * Labs Java: [Workshop-Day2-6-Java-Labs.pdf](slides/Day2/Workshop-Day2-6-Java-Labs.pdf)
 
 ## Resources
 
-* [RXJava Cheat Sheet](http://files.zeroturnaround.com/pdf/zt-rxjava-cheat-sheet.pdf)
-* [Couchbase in Docker](https://developer.couchbase.com/documentation/server/current/install/docker-deploy-single-node-cluster.html)
+* [Intro To Reactor Core](https://www.baeldung.com/reactor-core)
+* [Couchbase in Docker](https://docs.couchbase.com/server/current/install/getting-started-docker.html)

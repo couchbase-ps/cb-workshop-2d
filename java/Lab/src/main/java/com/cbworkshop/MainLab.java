@@ -3,6 +3,7 @@ package com.cbworkshop;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.json.JsonObject;
+import reactor.core.publisher.Flux;
 
 import java.util.Scanner;
 import java.util.stream.IntStream;
@@ -16,7 +17,7 @@ public class MainLab {
     public static final String CMD_SUBDOC = "subdoc";
     public static final String CMD_DELETE = "delete";
     public static final String CMD_QUERY = "query";
-    public static final String CMD_QUERY_ASYNC = "queryasync";
+    public static final String CMD_QUERY_REACTIVE = "queryreactive";
     public static final String CMD_QUERY_AIRPORTS = "queryairports";
     public static final String CMD_BULK_WRITE = "bulkwrite";
     public static final String CMD_BULK_WRITE_SYNC = "bulkwritesync";
@@ -45,6 +46,9 @@ public class MainLab {
 
     private static void initConnection() {
         String clusterAddress = System.getProperty("cbworkshop.clusteraddress");
+        String user = System.getProperty("cbworkshop.user");
+        String password = System.getProperty("cbworkshop.password");
+        String bucketName = System.getProperty("cbworkshop.bucket");
 
         // TODO: Lab
     }
@@ -72,10 +76,10 @@ public class MainLab {
                 delete(words);
                 break;
             case CMD_QUERY:
-                query(words);
+                query();
                 break;
-            case CMD_QUERY_ASYNC:
-                queryAsync(words);
+            case CMD_QUERY_REACTIVE:
+                queryReactive();
                 break;
             case CMD_QUERY_AIRPORTS:
                 queryAirports(words);
@@ -98,14 +102,19 @@ public class MainLab {
     }
 
     private static void create(String[] words) {
+        String key = "msg::" + words[1];
+        String from = words[2];
+        String to = words[3];
         // TODO: Lab
     }
 
     private static void read(String[] words) {
+        String key = words[1];
         // TODO: Lab
     }
 
     private static void update(String[] words) {
+        String key = "airline_" + words[1];
         // TODO: Lab
     }
 
@@ -114,18 +123,21 @@ public class MainLab {
     }
 
     private static void delete(String[] words) {
+        String key = "msg::" + words[1];
         // TODO: Lab
     }
 
-    private static void query(String[] words) {
+    private static void query() {
         // TODO: Lab
     }
 
-    private static void queryAsync(String[] words) {
+    private static void queryReactive() {
         // TODO: Lab
     }
 
     private static void queryAirports(String[] words) {
+        String sourceairport = words[1];
+        String destinationairport = words[2];
         // TODO: Lab
     }
 
@@ -137,13 +149,13 @@ public class MainLab {
 
         System.out.printf("Writing %d messages%n", size);
         long ini = System.currentTimeMillis();
-        // TODO: Use Reactor to insert all docs
-        IntStream.range(0, size)
-                .forEach(i -> JsonObject.create()
+        Flux.range(0, size)
+                .flatMap(i -> collection.reactive().insert("msg::" + i, JsonObject.create()
                         .put("timestamp", System.currentTimeMillis())
                         .put("from", "me")
                         .put("to", "you")
-                        .put("type", "msg"));
+                        .put("type", "msg")))
+                .blockLast();
         System.out.printf("Time elapsed %d ms%n", System.currentTimeMillis() - ini);
     }
 
@@ -155,18 +167,18 @@ public class MainLab {
 
         System.out.printf("Writing %d messages%n", size);
         long ini = System.currentTimeMillis();
-        // TODO: Use simple loop to insert all docs
         IntStream.range(0, size)
-                .forEach(i -> JsonObject.create()
+                .forEach(i -> collection.insert("msg::" + i, JsonObject.create()
                         .put("timestamp", System.currentTimeMillis())
                         .put("from", "me")
                         .put("to", "you")
-                        .put("type", "msg"));
+                        .put("type", "msg")));
 
         System.out.printf("Time elapsed %d ms%n", System.currentTimeMillis() - ini);
     }
 
     private static void search(String[] words) {
+        String term = words[1];
         // TODO: Lab
     }
 
@@ -179,7 +191,7 @@ public class MainLab {
         System.out.println("Usage options: \n\n" + CMD_CREATE + " [key from to] \n" + CMD_READ + " [key] \n"
                 + CMD_UPDATE + " [airline_key] \n" + CMD_SUBDOC + " [msg_key] \n" + CMD_DELETE + " [msg_key] \n"
                 + CMD_QUERY + " \n" + CMD_QUERY_AIRPORTS + " [sourceairport destinationairport] \n"
-                + CMD_QUERY_ASYNC + " \n" + CMD_BULK_WRITE + " [size] \n" + CMD_BULK_WRITE_SYNC + " [size] \n"
+                + CMD_QUERY_REACTIVE + " \n" + CMD_BULK_WRITE + " [size] \n" + CMD_BULK_WRITE_SYNC + " [size] \n"
                 + CMD_SEARCH + " [term] \n" + CMD_QUIT);
     }
 
