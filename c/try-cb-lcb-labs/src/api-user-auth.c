@@ -237,8 +237,8 @@ done:
 static lcb_STATUS insert_user(tcblcb_UserAuthParams *auth_params)
 {
     // LAB - Command - Define the store type lcb command 
-    // lcb_STATUS rc = LCB_ERR_GENERIC;
-    // lcb_CMDSTORE *cmd = NULL;
+    lcb_STATUS rc = LCB_ERR_GENERIC;
+    lcb_CMDSTORE *cmd = NULL;
     tcblcb_RESPDELEGATE *store_delegate = NULL;
     bool cmd_scheduled = false;
 
