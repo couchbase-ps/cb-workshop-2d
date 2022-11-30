@@ -77,6 +77,23 @@
         "summary": "Returns the index page"
       }
     },
+    "/api/test": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "context":	["{\"callsign\":\"MILE-AIR\",\"country\":\"United States\",\"iata\":\"Q5\",\"icao\":\"MLA\",\"id\":10,\"name\":\"40-Mile Air\",\"type\":\"airline\""]
+                }
+              }
+            },
+            "description": "Returns the airline_10 document."
+          }
+        },
+        "summary": "Returns the document with ID airline_10 to test connection to travel-sample bucket."
+      }
+    },
     "/api/airports": {
       "get": {
         "parameters": [

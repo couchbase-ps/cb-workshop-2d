@@ -48,4 +48,4 @@ RUN kodev clean && kodev build
 EXPOSE 8080
 
 # Set the entrypoint
-ENTRYPOINT ["./wait-for-couchbase-6.sh", "kodev", "run"]
+ENTRYPOINT ["./wait-for-couchbase-7.sh", "kodev", "run"]

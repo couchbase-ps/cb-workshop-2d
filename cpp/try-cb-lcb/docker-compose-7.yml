@@ -19,8 +19,8 @@ services:
     entrypoint: [ "wait-for-it", "backend:8080", "--timeout=400", "--strict", "--", "npm", "run", "serve" ]
 
   db:
-    image: couchbase/server-sandbox:6.6.5
-    container_name: couchbase-sandbox-6.6.5-wss
+    image: couchbase/server-sandbox:7.0.0
+    container_name: couchbase-sandbox-7.0.0-wss
     ports:
       - "8091-8095:8091-8095"
       - "9102:9102"
