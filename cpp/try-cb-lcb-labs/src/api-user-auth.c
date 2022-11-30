@@ -236,8 +236,9 @@ done:
 
 static lcb_STATUS insert_user(tcblcb_UserAuthParams *auth_params)
 {
-    lcb_STATUS rc = LCB_ERR_GENERIC;
-    lcb_CMDSTORE *cmd = NULL;
+    // LAB - Command - Define the store type lcb command 
+    // lcb_STATUS rc = LCB_ERR_GENERIC;
+    // lcb_CMDSTORE *cmd = NULL;
     tcblcb_RESPDELEGATE *store_delegate = NULL;
     bool cmd_scheduled = false;
 
@@ -255,7 +256,7 @@ static lcb_STATUS insert_user(tcblcb_UserAuthParams *auth_params)
     );
     /*IfNULLGotoDone(
         cJSON_AddStringToObject(user_json, "type", "user"),
-	    "Failed ot add `type` to JWT payload"
+	    "Failed to add `type` to JWT payload"
     );*/
     user_json_string = cJSON_PrintUnformatted(user_json);
 
