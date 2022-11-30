@@ -8,7 +8,7 @@
 		<dependency>
 			<groupId>com.couchbase.client</groupId>
 			<artifactId>java-client</artifactId>
-			<version>3.2.5</version>
+			<version>3.4.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -54,10 +54,10 @@
 				<configuration>
 					<mainClass>com.cbworkshop.MainLab</mainClass>
 					<systemProperties>
-<!--						<systemProperty>-->
-<!--							<key>cbworkshop.clusteraddress</key>-->
-<!--							<value>couchbase</value>-->
-<!--						</systemProperty>-->
+						<systemProperty>
+							<key>cbworkshop.clusteraddress</key>
+							<value>localhost</value>
+						</systemProperty>
 						<systemProperty>
 							<key>cbworkshop.user</key>
 							<value>travel</value>

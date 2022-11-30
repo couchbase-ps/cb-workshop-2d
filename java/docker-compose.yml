@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  couchbase:
+    image: couchbase/server-sandbox:6.6.5
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8093/query/service", "-u", "Administrator:password", "-d", "statement=select * from \\`travel-sample\\`" ]
+      interval: 15s
+      timeout: 15s
+      retries: 3
+    ports:
+      - "8091-8096:8091-8096"
+      - "18091-18096:18091-18096"
+      - "11210-11211:11210-11211"
+  java-lab:
+    build:
+      context: Lab
+      dockerfile: ../Dockerfile
+    depends_on:
+      couchbase:
+        condition: service_healthy
+    container_name: java-lab
+    stdin_open: true
+    tty: true

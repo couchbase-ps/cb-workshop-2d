@@ -8,7 +8,8 @@ import com.couchbase.client.java.env.ClusterEnvironment;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.kv.MutateInSpec;
-import com.couchbase.client.java.query.*;
+import com.couchbase.client.java.query.QueryResult;
+import com.couchbase.client.java.query.ReactiveQueryResult;
 import com.couchbase.client.java.search.SearchQuery;
 import com.couchbase.client.java.search.queries.MatchQuery;
 import com.couchbase.client.java.search.result.SearchResult;
@@ -16,7 +17,8 @@ import com.couchbase.client.java.search.result.SearchRow;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
 import java.util.stream.IntStream;
 
 import static com.couchbase.client.java.ClusterOptions.clusterOptions;
@@ -99,10 +101,10 @@ public class MainLab {
                 delete(words);
                 break;
             case CMD_QUERY:
-                query(words);
+                query();
                 break;
             case CMD_QUERY_REACTIVE:
-                queryReactive(words);
+                queryReactive();
                 break;
             case CMD_QUERY_AIRPORTS:
                 queryAirports(words);
@@ -176,15 +178,14 @@ public class MainLab {
         }
     }
 
-    private static void query(String[] words) {
+    private static void query() {
         QueryResult queryResult = cluster.query("SELECT * FROM `travel-sample` LIMIT 10");
         for (JsonObject row : queryResult.rowsAsObject()) {
             System.out.println(row.toString());
         }
     }
 
-    private static void queryReactive(String[] words) {
-
+    private static void queryReactive() {
         cluster.reactive()
                 .query("SELECT * FROM `travel-sample` LIMIT 5")
                 .flatMapMany(ReactiveQueryResult::rowsAsObject)
@@ -228,7 +229,6 @@ public class MainLab {
     }
 
     private static void bulkWriteSync(String[] words) {
-
         int size = Integer.parseInt(words[1]);
 
         System.out.println("Deleting messages ...");
@@ -249,7 +249,7 @@ public class MainLab {
     private static void search(String[] words) {
         String term = words[1];
         MatchQuery fts = SearchQuery.match(term);
-        SearchResult result = cluster.searchQuery("sidx_hotel_desc", fts);
+        SearchResult result = cluster.searchQuery("hotels", fts);
         for (SearchRow row : result.rows()) {
             System.out.println(row);
         }
