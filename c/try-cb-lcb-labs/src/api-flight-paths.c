@@ -250,12 +250,12 @@ int tcblcb_api_fpaths(struct http_request *req)
 
     // execute the N1QL query command to get the flight paths and wait for results
     tcblcb_FlightPathResults flight_path_results = {0};
-    // LAB - Position Param Query - Create the Query
+    // LAB - Position Param Query - Create the Query Command
     // IfLCBFailGotoDone(
     //     lcb_cmdquery_create(&query_cmd),
     //     "Failed to create query command"
     // );
-    // LAB - Position Param Query - Add the N1QL to the query
+    // LAB - Position Param Query - Add the SQL++ to the query
     // IfLCBFailGotoDone(
     //     lcb_cmdquery_statement(query_cmd, fpaths_query_string, fpaths_query_strlen),
     //     "Failed to set fpaths query command statement"

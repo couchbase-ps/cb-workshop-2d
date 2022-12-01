@@ -61,7 +61,7 @@ docker-compose up --build -d
   * Slides: [Workshop-Day2-3-N1QL.pdf](slides/Day2/Workshop-Day2-3-N1QL.pdf)
   * Slides: [Workshop-Day2-4-FTS.pdf](slides/Day2/Workshop-Day2-4-FTS.pdf)
   * Slides: [Workshop-Day2-5-N1QL-Labs.pdf](slides/Day2/Workshop-Day2-5-N1QL-Labs.pdf)
-  * Labs C: [Workshop-Day2-6-CCPP-Labs.pdf](slides/Day2/Workshop-Day2-6-CCPP-Labs.pdf)
+  * Labs C: [Workshop-Day2-6-CCPP-Labs.pdf](slides/Day2/Workshop-Day2-6-C-Labs.pdf)
   * Labs Java: [Workshop-Day2-6-Java-Labs.pdf](slides/Day2/Workshop-Day2-6-Java-Labs.pdf)
 
 ## Resources

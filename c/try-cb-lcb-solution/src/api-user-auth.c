@@ -279,11 +279,9 @@ static lcb_STATUS insert_user(tcblcb_UserAuthParams *auth_params)
     // );
     // ============ End CB 7 Only ==========
     // LAB - Insert - Set the document ID
-    char* username = (char *)malloc(strlen(auth_params->username)+5);
-    strncpy(username,"user_\0",6); 
-    strncat(username,auth_params->username,strlen(auth_params->username)); 
+   
     IfLCBFailGotoDone(
-        lcb_cmdstore_key(cmd, username, strlen(username)),
+        lcb_cmdstore_key(cmd, auth_params->username,strlen(auth_params->username)),
         "Failed to set store command user key"
     );
     // LAB - Insert - Set the document value
