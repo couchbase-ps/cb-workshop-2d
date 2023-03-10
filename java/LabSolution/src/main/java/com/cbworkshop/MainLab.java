@@ -1,10 +1,8 @@
 package com.cbworkshop;
 
-import com.couchbase.client.core.env.TimeoutConfig;
 import com.couchbase.client.core.error.DocumentNotFoundException;
 import com.couchbase.client.java.Collection;
 import com.couchbase.client.java.*;
-import com.couchbase.client.java.env.ClusterEnvironment;
 import com.couchbase.client.java.json.JsonObject;
 import com.couchbase.client.java.kv.GetResult;
 import com.couchbase.client.java.kv.MutateInSpec;
@@ -21,7 +19,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.couchbase.client.java.ClusterOptions.clusterOptions;
 import static com.couchbase.client.java.query.QueryOptions.queryOptions;
 
 public class MainLab {
@@ -69,15 +66,12 @@ public class MainLab {
         String password = System.getProperty("cbworkshop.password");
         String bucketName = System.getProperty("cbworkshop.bucket");
 
-        ClusterEnvironment env = ClusterEnvironment.builder()
-                .timeoutConfig(TimeoutConfig
-                        .connectTimeout(Duration.ofSeconds(15))
-                        .kvTimeout(Duration.ofSeconds(15)))
-                .build();
-
         cluster = Cluster.connect(clusterAddress,
-                clusterOptions(user, password)
-                        .environment(env));
+                ClusterOptions.clusterOptions(user, password)
+                        .environment(env -> env.timeoutConfig()
+                                .connectTimeout(Duration.ofSeconds(15))
+                                .kvTimeout(Duration.ofSeconds(15))));
+
         Bucket bucket = cluster.bucket(bucketName);
         scope = bucket.scope(SCOPE);
         msgCollection = scope.collection(MSG);
@@ -278,8 +272,8 @@ public class MainLab {
         System.out.printf("%s [msg_key]\n", CMD_SUBDOC);
         System.out.printf("%s [msg_key]\n", CMD_DELETE);
         System.out.printf("%s\n", CMD_QUERY);
-        System.out.printf("%s\n", CMD_QUERY_REACTIVE);
         System.out.printf("%s [sourceairport destinationairport]\n", CMD_QUERY_AIRPORTS);
+        System.out.printf("%s\n", CMD_QUERY_REACTIVE);
         System.out.printf("%s [size]\n", CMD_BULK_WRITE);
         System.out.printf("%s [size]\n", CMD_BULK_WRITE_REACTIVE);
         System.out.printf("%s [term]\n", CMD_SEARCH);

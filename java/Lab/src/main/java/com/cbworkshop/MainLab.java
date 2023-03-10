@@ -155,7 +155,8 @@ public class MainLab {
         int size = Integer.parseInt(words[1]);
 
         System.out.println("Deleting messages ...");
-        cluster.query("DELETE FROM `travel-sample`.inventory.msg");
+
+        //TODO lab
 
         Map<String, JsonObject> msgs = IntStream.range(0, size)
                 .boxed()
@@ -200,8 +201,8 @@ public class MainLab {
         System.out.printf("%s [msg_key]\n", CMD_SUBDOC);
         System.out.printf("%s [msg_key]\n", CMD_DELETE);
         System.out.printf("%s\n", CMD_QUERY);
-        System.out.printf("%s\n", CMD_QUERY_REACTIVE);
         System.out.printf("%s [sourceairport destinationairport]\n", CMD_QUERY_AIRPORTS);
+        System.out.printf("%s\n", CMD_QUERY_REACTIVE);
         System.out.printf("%s [size]\n", CMD_BULK_WRITE);
         System.out.printf("%s [size]\n", CMD_BULK_WRITE_REACTIVE);
         System.out.printf("%s [term]\n", CMD_SEARCH);
