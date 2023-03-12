@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   couchbase:
-    image: couchbase/server-sandbox:6.6.5
+    image: couchbase/server-sandbox:7.1.4
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:8093/query/service", "-u", "Administrator:password", "-d", "statement=select * from \\`travel-sample\\`" ]
       interval: 15s
