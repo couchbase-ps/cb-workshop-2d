@@ -94,11 +94,11 @@ int tcblcb_api_airports(struct http_request *req)
     query_buf = kore_buf_alloc(BUFSIZ);
     // ============ Start CB 7 Only ==========
     // LAB - CB 7 Query
-    //kore_buf_appendf(query_buf, "SELECT airportname FROM `travel-sample`.inventory.airport WHERE ");
+    kore_buf_appendf(query_buf, "SELECT airportname FROM `travel-sample`.inventory.airport WHERE ");
     // ============ End CB 7 Only ==========
     // ============ Start CB 6 Only ==========
     // LAB - CB 6 Query
-    kore_buf_appendf(query_buf, "SELECT airportname FROM `travel-sample` WHERE type = 'airport' AND ");
+    //kore_buf_appendf(query_buf, "SELECT airportname FROM `travel-sample` WHERE type = 'airport' AND ");
     // ============ End CB 6 Only ==========
 
     bool is_short_code = false;

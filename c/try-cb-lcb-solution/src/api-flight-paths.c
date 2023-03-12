@@ -202,21 +202,21 @@ int tcblcb_api_fpaths(struct http_request *req)
     // prepare the N1QL query command to get the flight paths
     // ============ Start CB 7 Only ==========
     // LAB - CB 7 Query
-    // char fpaths_query_string[] =
-    //     "SELECT faa as fromAirport FROM `travel-sample`.inventory.airport "
-    //     "WHERE airportname = $1 "
-    //     "UNION "
-    //     "SELECT faa as toAirport FROM `travel-sample`.inventory.airport "
-    //     "WHERE airportname = $2";
+     char fpaths_query_string[] =
+         "SELECT faa as fromAirport FROM `travel-sample`.inventory.airport "
+         "WHERE airportname = $1 "
+         "UNION "
+         "SELECT faa as toAirport FROM `travel-sample`.inventory.airport "
+         "WHERE airportname = $2";
     // ============ End CB 7 Only ==========
     // ============ Start CB 6 Only ==========
     // LAB - CB 6 Query
-    char fpaths_query_string[] =
-        "SELECT faa as fromAirport FROM `travel-sample` "
-        "WHERE type = 'airport' AND airportname = $1 "
-        "UNION "
-        "SELECT faa as toAirport FROM `travel-sample` "
-        "WHERE type = 'airport' AND airportname = $2";
+    //char fpaths_query_string[] =
+    //    "SELECT faa as fromAirport FROM `travel-sample` "
+    //    "WHERE type = 'airport' AND airportname = $1 "
+    //    "UNION "
+    //    "SELECT faa as toAirport FROM `travel-sample` "
+    //    "WHERE type = 'airport' AND airportname = $2";
     // ============ End CB 6 Only ==========
     size_t fpaths_query_strlen = sizeof(fpaths_query_string) - 1;
 
@@ -294,23 +294,23 @@ int tcblcb_api_fpaths(struct http_request *req)
     // prepare the N1QL query command to get the routes
     // ============ Start CB 7 Only ==========
     // LAB - CB 7 Query
-    // char routes_query_string[] =
-    //     "SELECT a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment "
-    //     "FROM `travel-sample`.inventory.route AS r "
-    //     "UNNEST r.schedule AS s "
-    //     "JOIN `travel-sample`.inventory.airline AS a ON KEYS r.airlineid "
-    //     "WHERE r.sourceairport = $fromfaa AND r.destinationairport = $tofaa AND s.day = $dayofweek "
-    //     "ORDER BY a.name ASC";
+     char routes_query_string[] =
+         "SELECT a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment "
+         "FROM `travel-sample`.inventory.route AS r "
+         "UNNEST r.schedule AS s "
+         "JOIN `travel-sample`.inventory.airline AS a ON KEYS r.airlineid "
+         "WHERE r.sourceairport = $fromfaa AND r.destinationairport = $tofaa AND s.day = $dayofweek "
+         "ORDER BY a.name ASC";
     // ============ End CB 7 Only ==========
     // ============ Start CB 6 Only ==========
     // LAB - CB 6 Query
-    char routes_query_string[] =
-        "SELECT a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment "
-        "FROM `travel-sample` AS r "
-        "UNNEST r.schedule AS s "
-        "JOIN `travel-sample` AS a ON KEYS r.airlineid "
-        "WHERE r.type = 'route' AND a.type = 'airline' AND r.sourceairport = $fromfaa AND r.destinationairport = $tofaa AND s.day = $dayofweek "
-        "ORDER BY a.name ASC";
+    //char routes_query_string[] =
+    //    "SELECT a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment "
+    //    "FROM `travel-sample` AS r "
+    //    "UNNEST r.schedule AS s "
+    //    "JOIN `travel-sample` AS a ON KEYS r.airlineid "
+    //    "WHERE r.type = 'route' AND a.type = 'airline' AND r.sourceairport = $fromfaa AND r.destinationairport = $tofaa AND s.day = $dayofweek "
+    //    "ORDER BY a.name ASC";
     // ============ End CB 6 Only ==========
     size_t routes_query_strlen = sizeof(routes_query_string) - 1;
 

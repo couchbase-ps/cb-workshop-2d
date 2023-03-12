@@ -28,7 +28,14 @@
 static const unsigned char JWT_SECRET_STRING[] = "cbtravelsample";
 static const size_t        JWT_SECRET_STRLEN = sizeof(JWT_SECRET_STRING) - 1;
 
-static const char   USERS_COLL_STRING[] = "_default";
+// ============ Start CB 6 Only ==========
+// LAB - Couchbase 6.0 Only!
+//static const char   USERS_COLL_STRING[] = "_default";
+// ============ End CB 6 Only ==========
+// ============ Start CB 7 Only ==========
+// LAB - Couchbase 7.0 Only!
+static const char   USERS_COLL_STRING[] = "users";
+// ============ End CB 7 Only ==========
 static const size_t USERS_COLL_STRLEN = sizeof(USERS_COLL_STRING) - 1;
 
 __unused static const char   UNAME_KEY_STRING[] = "user";

@@ -72,7 +72,7 @@ function createHotelsIndex() {
     http://${CB_HOST}:8094/api/index/hotels-index \
     -H 'cache-control: no-cache' \
     -H 'content-type: application/json' \
-    -d @fts-hotels-index.json)
+    -d @fts-hotels-index-7.json)
   if [[ $http_code -ne 200 ]]; then
     log Hotel index creation failed
     cat hotel-index.out

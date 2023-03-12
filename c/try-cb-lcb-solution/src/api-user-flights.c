@@ -160,14 +160,14 @@ static lcb_STATUS upsert_new_flight(const char *tenant, const char *flight_uuid_
     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_collection(
-    //         cmd,
-    //         tenant, strlen(tenant),
-    //         BOOKINGS_COLL_STRING, BOOKINGS_COLL_STRLEN
-    //     ),
-    //     "Failed to set store insert scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_collection(
+             cmd,
+             tenant, strlen(tenant),
+             BOOKINGS_COLL_STRING, BOOKINGS_COLL_STRLEN
+         ),
+         "Failed to set store insert scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Upsert - Set the document ID
     IfLCBFailGotoDone(
@@ -250,13 +250,13 @@ static lcb_STATUS add_user_booking(tcblcb_UserFlightsParams *user_params, const 
     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_collection(
-    //         cmd,
-    //         user_params->tenant, strlen(user_params->tenant),
-    //         USERS_COLL_STRING, USERS_COLL_STRLEN),
-    //     "Failed to set subdoc get scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_collection(
+             cmd,
+             user_params->tenant, strlen(user_params->tenant),
+             USERS_COLL_STRING, USERS_COLL_STRLEN),
+         "Failed to set subdoc get scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Update Subdoc - Specify the Document ID
     IfLCBFailGotoDone(
@@ -543,13 +543,13 @@ static lcb_STATUS get_flight_booking(lcb_INSTANCE *instance, const char *tenant,
     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     (rc = lcb_cmdget_collection(
-    //         cmd,
-    //         tenant, strlen(tenant),
-    //         BOOKINGS_COLL_STRING, BOOKINGS_COLL_STRLEN)),
-    //     "Failed to set the get command scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         (rc = lcb_cmdget_collection(
+             cmd,
+             tenant, strlen(tenant),
+             BOOKINGS_COLL_STRING, BOOKINGS_COLL_STRLEN)),
+         "Failed to set the get command scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Get Document - Specify the Document ID
     IfLCBFailGotoDone(
@@ -659,13 +659,13 @@ static lcb_STATUS get_user_bookings(tcblcb_UserFlightsParams *user_params, cJSON
     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     (rc = lcb_cmdsubdoc_collection(
-    //         cmd,
-    //         user_params->tenant, strlen(user_params->tenant),
-    //         USERS_COLL_STRING, USERS_COLL_STRLEN)),
-    //     "Failed to set subdoc get scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         (rc = lcb_cmdsubdoc_collection(
+             cmd,
+             user_params->tenant, strlen(user_params->tenant),
+             USERS_COLL_STRING, USERS_COLL_STRLEN)),
+         "Failed to set subdoc get scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Get Subdoc - Specify the Document ID
     IfLCBFailGotoDone(

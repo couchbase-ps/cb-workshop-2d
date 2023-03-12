@@ -1,16 +1,18 @@
-version: "3.9"
+version: "4.0"
 
 services:
   backend:
-    container_name: try-cb-api-wss
-    build: .
+    container_name: try-cb-api-wss-7.1
+    build: 
+      context: .
+      dockerfile: Dockerfile-7
     depends_on:
       - db
     ports:
       - 8080:8080
 
   frontend:
-    container_name: try-cb-fe-wss
+    container_name: try-cb-fe-wss-7.1
     build: "https://github.com/couchbaselabs/try-cb-frontend-v2.git#7.0"
     depends_on:
       - backend
@@ -19,8 +21,8 @@ services:
     entrypoint: [ "wait-for-it", "backend:8080", "--timeout=400", "--strict", "--", "npm", "run", "serve" ]
 
   db:
-    image: couchbase/server-sandbox:7.0.0
-    container_name: couchbase-sandbox-7.0.0-wss
+    image: couchbase/server-sandbox:7.1.4
+    container_name: couchbase-sandbox-7.1.4-wss
     ports:
       - "8091-8095:8091-8095"
       - "9102:9102"
