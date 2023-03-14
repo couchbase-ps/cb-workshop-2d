@@ -36,11 +36,11 @@ RUN minisign -Vm kore-4.1.0.tar.gz -P RWSxkEDc2y+whfKTmvhqs/YaFmEwblmvar7l6RXMjn
     && cp kore /usr/local/bin/kore \
     && cp kodev/kodev /usr/local/bin/kodev
 
-RUN mkdir -p /try-cb-lcb
+RUN mkdir -p /try-cb-lcb-labs
 
-ADD . /try-cb-lcb
+ADD . /try-cb-lcb-labs
 
-WORKDIR /try-cb-lcb
+WORKDIR /try-cb-lcb-labs
 
 RUN kodev clean && kodev build
 
