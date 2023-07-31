@@ -199,16 +199,16 @@ int tcblcb_api_fpaths(struct http_request *req)
         "leave query param was not found"
     );
     // Placeholder for build - REMOVE
-    char fpaths_query_string[] = ""; 
+    //char fpaths_query_string[] = ""; 
     // prepare the N1QL query command to get the flight paths
     // ============ Start CB 7 Only ==========
     // LAB - CB 7 Query
-    // char fpaths_query_string[] =
-    //     "SELECT faa as fromAirport FROM `travel-sample`.inventory.airport "
-    //     "WHERE airportname = $1 "
-    //     "UNION "
-    //     "SELECT faa as toAirport FROM `travel-sample`.inventory.airport "
-    //     "WHERE airportname = $2";
+     char fpaths_query_string[] =
+         "SELECT faa as fromAirport FROM `travel-sample`.inventory.airport "
+         "WHERE airportname = $1 "
+         "UNION "
+         "SELECT faa as toAirport FROM `travel-sample`.inventory.airport "
+         "WHERE airportname = $2";
     // ============ End CB 7 Only ==========
     // ============ Start CB 6 Only ==========
     // LAB - Position Param Query - CB 6 Query
@@ -252,57 +252,57 @@ int tcblcb_api_fpaths(struct http_request *req)
     // execute the N1QL query command to get the flight paths and wait for results
     tcblcb_FlightPathResults flight_path_results = {0};
     // LAB - Position Param Query - Create the Query Command
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_create(&query_cmd),
-    //     "Failed to create query command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_create(&query_cmd),
+         "Failed to create query command"
+     );
     // LAB - Position Param Query - Add the SQL++ to the query
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_statement(query_cmd, fpaths_query_string, fpaths_query_strlen),
-    //     "Failed to set fpaths query command statement"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_statement(query_cmd, fpaths_query_string, fpaths_query_strlen),
+         "Failed to set fpaths query command statement"
+     );
     // LAB - Position Param Query - Add the positional parameters to the query
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_positional_params(query_cmd, params_string, strlen(params_string)),
-    //     "Failed to set query command positional parameters"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_positional_params(query_cmd, params_string, strlen(params_string)),
+         "Failed to set query command positional parameters"
+     );
     // LAB - Position Param Query - Set query formatting
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_option(query_cmd, "pretty", strlen("pretty"), "false", strlen("false")),
-    //     "Failed to set query command pretty option"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_option(query_cmd, "pretty", strlen("pretty"), "false", strlen("false")),
+         "Failed to set query command pretty option"
+     );
     // LAB - Position Param Query - Specify Adhoc = FALSE
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_adhoc(query_cmd, false),
-    //     "Failed to disable adhoc query (enable prepared statement)"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_adhoc(query_cmd, false),
+         "Failed to disable adhoc query (enable prepared statement)"
+     );
     // LAB - Position Param Query - Set the callback function
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_callback(query_cmd, fpaths_query_callback),
-    //     "Failed to set fpaths query command callback"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_callback(query_cmd, fpaths_query_callback),
+         "Failed to set fpaths query command callback"
+     );
     DebugQueryPayload(query_cmd);
     // LAB - Position Param Query - Send the query to the cluster
-    // IfLCBFailGotoDone(
-    //     lcb_query(_tcblcb_lcb_instance, &flight_path_results, query_cmd),
-    //     "Failed to schedule fpaths query command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_query(_tcblcb_lcb_instance, &flight_path_results, query_cmd),
+         "Failed to schedule fpaths query command"
+     );
     IfLCBFailGotoDone(
         lcb_wait(_tcblcb_lcb_instance, LCB_WAIT_DEFAULT),
         "Failed while waiting for fpaths query operation to complete"
     );
     // Placeholder for build - REMOVE
-    char routes_query_string[] = "";
+    //char routes_query_string[] = "";
     // prepare the N1QL query command to get the routes
     // ============ Start CB 7 Only ==========
     // LAB - CB 7 Query
-    // char routes_query_string[] =
-    //     "SELECT a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment "
-    //     "FROM `travel-sample`.inventory.route AS r "
-    //     "UNNEST r.schedule AS s "
-    //     "JOIN `travel-sample`.inventory.airline AS a ON KEYS r.airlineid "
-    //     "WHERE r.sourceairport = $fromfaa AND r.destinationairport = $tofaa AND s.day = $dayofweek "
-    //     "ORDER BY a.name ASC";
+     char routes_query_string[] =
+         "SELECT a.name, s.flight, s.utc, r.sourceairport, r.destinationairport, r.equipment "
+         "FROM `travel-sample`.inventory.route AS r "
+         "UNNEST r.schedule AS s "
+         "JOIN `travel-sample`.inventory.airline AS a ON KEYS r.airlineid "
+         "WHERE r.sourceairport = $fromfaa AND r.destinationairport = $tofaa AND s.day = $dayofweek "
+         "ORDER BY a.name ASC";
     // ============ End CB 7 Only ==========
     // ============ Start CB 6 Only ==========
     // LAB - Named Param Query - CB 6 Query
@@ -359,72 +359,72 @@ int tcblcb_api_fpaths(struct http_request *req)
 
     // execute the N1QL query command to get the routes and wait for results
     // LAB - Named Param Query - Reset the query command
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_reset(query_cmd),
-    //     "Failed to reset query command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_reset(query_cmd),
+         "Failed to reset query command"
+     );
     // LAB - Named Param Query - Create the Query
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_create(&query_cmd),
-    //     "Failed to create routes query command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_create(&query_cmd),
+         "Failed to create routes query command"
+     );
     // LAB - Named Param Query - Add the N1QL to the query
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_statement(query_cmd, routes_query_string, routes_query_strlen),
-    //     "Failed to set routes query command statement"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_statement(query_cmd, routes_query_string, routes_query_strlen),
+         "Failed to set routes query command statement"
+     );
     // LAB - Named Param Query - Add named parameters to the query
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_named_param(
-    //         query_cmd,
-    //         from_param_string,
-    //         from_param_strlen,
-    //         from_faa_json_string,
-    //         strlen(from_faa_json_string)
-    //     ),
-    //     "Failed to set '$fromfaa' query command parameter"
-    // );
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_named_param(
-    //         query_cmd,
-    //         to_param_string,
-    //         to_param_strlen,
-    //         to_faa_json_string,
-    //         strlen(to_faa_json_string)
-    //     ),
-    //     "Failed to set '$tofaa' query command parameter"
-    // );
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_named_param(
-    //         query_cmd,
-    //         dayofweek_param_string,
-    //         dayofweek_param_strlen,
-    //         leave_weekday_json_string,
-    //         strlen(leave_weekday_json_string)
-    //     ),
-    //     "Failed to set '$dayofweek' query command parameter"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_named_param(
+             query_cmd,
+             from_param_string,
+             from_param_strlen,
+             from_faa_json_string,
+             strlen(from_faa_json_string)
+         ),
+         "Failed to set '$fromfaa' query command parameter"
+     );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_named_param(
+             query_cmd,
+             to_param_string,
+             to_param_strlen,
+             to_faa_json_string,
+             strlen(to_faa_json_string)
+         ),
+         "Failed to set '$tofaa' query command parameter"
+     );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_named_param(
+             query_cmd,
+             dayofweek_param_string,
+             dayofweek_param_strlen,
+             leave_weekday_json_string,
+             strlen(leave_weekday_json_string)
+         ),
+         "Failed to set '$dayofweek' query command parameter"
+     );
     // LAB - Named Param Query - Set query formatting
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_option(query_cmd, "pretty", strlen("pretty"), "false", strlen("false")),
-    //     "Failed to set query command pretty option"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_option(query_cmd, "pretty", strlen("pretty"), "false", strlen("false")),
+         "Failed to set query command pretty option"
+     );
     // LAB - Named Param Query - Specify Adhoc = FALSE
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_adhoc(query_cmd, false),
-    //     "Failed to disable adhoc query (enable prepared statement)"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_adhoc(query_cmd, false),
+         "Failed to disable adhoc query (enable prepared statement)"
+     );
     // LAB - Named Param Query - Set the callback function
-    // IfLCBFailGotoDone(
-    //     lcb_cmdquery_callback(query_cmd, routes_query_callback),
-    //     "Failed to set routes query command callback"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdquery_callback(query_cmd, routes_query_callback),
+         "Failed to set routes query command callback"
+     );
     DebugQueryPayload(query_cmd);
     // LAB - Named Param Query - Send the query to the cluster
-    // IfLCBFailGotoDone(
-    //     lcb_query(_tcblcb_lcb_instance, resp_json_data_array, query_cmd),
-    //     "Failed to schedule routes query command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_query(_tcblcb_lcb_instance, resp_json_data_array, query_cmd),
+         "Failed to schedule routes query command"
+     );
     IfLCBFailGotoDone(
         lcb_wait(_tcblcb_lcb_instance, LCB_WAIT_DEFAULT),
         "Failed while waiting for routes query operation to complete"

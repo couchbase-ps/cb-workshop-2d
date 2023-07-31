@@ -261,50 +261,49 @@ static lcb_STATUS insert_user(tcblcb_UserAuthParams *auth_params)
         cJSON_AddStringToObject(user_json, PWORD_KEY_STRING, auth_params->password),
         "Failed to add `password` to JWT payload"
     );
-    /*IfNULLGotoDone(
+    IfNULLGotoDone(
         cJSON_AddStringToObject(user_json, "type", "user"),
 	    "Failed to add `type` to JWT payload"
-    );*/
+    );
     user_json_string = cJSON_PrintUnformatted(user_json);
 
     // LAB - Insert - Create the command
     // insert the user or indicate failure
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_create(&cmd, LCB_STORE_INSERT),
-    //     "Failed to create store insert command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_create(&cmd, LCB_STORE_INSERT),
+         "Failed to create store insert command"
+     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_collection(
-    //         cmd,
-    //         auth_params->tenant, strlen(auth_params->tenant),
-    //         USERS_COLL_STRING, USERS_COLL_STRLEN
-    //     ),
-    //     "Failed to set store insert scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_collection(
+             cmd,
+             auth_params->tenant, strlen(auth_params->tenant),
+             USERS_COLL_STRING, USERS_COLL_STRLEN
+         ),
+         "Failed to set store insert scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Insert - Set the document ID
 
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_key(cmd, auth_params->username, strlen(auth_params->username)),
-    //     "Failed to set store command user key"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_key(cmd, auth_params->username, strlen(auth_params->username)),
+         "Failed to set store command user key"
+     );
     // LAB - Insert - Set the document value
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_value(cmd, user_json_string, strlen(user_json_string)),
-    //     "Failed to set store command user document"
-    // );
-
+     IfLCBFailGotoDone(
+         lcb_cmdstore_value(cmd, user_json_string, strlen(user_json_string)),
+         "Failed to set store command user document"
+     );
     // receiver is responsible for freeing this memory if command is scheduled
     store_delegate = malloc(sizeof(tcblcb_RESPDELEGATE));
     store_delegate->cookie = (void**)&rc;
     store_delegate->callback = (tcblcb_RESPDELEGATE_CALLBACK)user_insert_callback;
     // LAB - Insert - Store the document 
-    // IfLCBFailGotoDone(
-    //     lcb_store(_tcblcb_lcb_instance, store_delegate, cmd),
-    //     "Failed to schedule user insert command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_store(_tcblcb_lcb_instance, store_delegate, cmd),
+         "Failed to schedule user insert command"
+     );
 
     cmd_scheduled = true;
 
@@ -376,42 +375,42 @@ static tcblcb_UserPasswordResult get_user_password(lcb_INSTANCE *instance, tcblc
     bool cmd_scheduled = false;
 
     // LAB - Get Subdoc - Create Command
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_create(&cmd),
-    //     "Failed to create subdoc command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_create(&cmd),
+         "Failed to create subdoc command"
+     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_collection(
-    //         cmd,
-    //         auth_params->tenant, strlen(auth_params->tenant),
-    //         USERS_COLL_STRING, USERS_COLL_STRLEN),
-    //     "Failed to set subdoc get scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_collection(
+             cmd,
+             auth_params->tenant, strlen(auth_params->tenant),
+             USERS_COLL_STRING, USERS_COLL_STRLEN),
+         "Failed to set subdoc get scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Get Subdoc - Specify the Document ID
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_key(cmd, auth_params->username, strlen(auth_params->username)),
-    //     "Failed to set subdoc key"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_key(cmd, auth_params->username, strlen(auth_params->username)),
+         "Failed to set subdoc key"
+     );
 
     // LAB - Get Subdoc - Create Subdoc Spec
-    // IfLCBFailGotoDone(
-    //     lcb_subdocspecs_create(&ops, 1),
-    //     "Failed to create subdoc operation specs"
-    // );
+     IfLCBFailGotoDone(
+         lcb_subdocspecs_create(&ops, 1),
+         "Failed to create subdoc operation specs"
+     );
     // LAB - Get Subdoc - Specify the Subdoc Field to return
-    // IfLCBFailGotoDone(
-    //     lcb_subdocspecs_get(ops, 0, 0, PWORD_KEY_STRING, PWORD_KEY_STRLEN),
-    //     "Failed to create get operation for 'password' path"
-    // );
+     IfLCBFailGotoDone(
+         lcb_subdocspecs_get(ops, 0, 0, PWORD_KEY_STRING, PWORD_KEY_STRLEN),
+         "Failed to create get operation for 'password' path"
+     );
 
     // LAB - Get Subdoc - Add Subdoc operations to command
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_specs(cmd, ops),
-    //     "Failed to add subspec operations for command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_specs(cmd, ops),
+         "Failed to add subspec operations for command"
+     );
 
     LogDebug("Get password via subdoc for username: %s", auth_params->username);
 
@@ -420,10 +419,10 @@ static tcblcb_UserPasswordResult get_user_password(lcb_INSTANCE *instance, tcblc
     subdoc_delegate->cookie = (void*)&user_password_result;
     subdoc_delegate->callback = (tcblcb_RESPDELEGATE_CALLBACK)user_password_subdoc_callback;
     // LAB - Get Subdoc - Run Subdoc operation
-    // IfLCBFailGotoDone(
-    //     lcb_subdoc(instance, subdoc_delegate, cmd),
-    //     "Failed to schedule subdoc command"
-    // )
+     IfLCBFailGotoDone(
+         lcb_subdoc(instance, subdoc_delegate, cmd),
+         "Failed to schedule subdoc command"
+     )
 
     cmd_scheduled = true;
 

@@ -154,31 +154,31 @@ static lcb_STATUS upsert_new_flight(const char *tenant, const char *flight_uuid_
 
     // LAB - Upsert - Create the command
     // insert or update the new flight
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_create(&cmd, LCB_STORE_UPSERT),
-    //     "Failed to create store insert command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_create(&cmd, LCB_STORE_UPSERT),
+         "Failed to create store insert command"
+     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_collection(
-    //         cmd,
-    //         tenant, strlen(tenant),
-    //         BOOKINGS_COLL_STRING, BOOKINGS_COLL_STRLEN
-    //     ),
-    //     "Failed to set store insert scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_collection(
+             cmd,
+             tenant, strlen(tenant),
+             BOOKINGS_COLL_STRING, BOOKINGS_COLL_STRLEN
+         ),
+         "Failed to set store insert scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Upsert - Set the document ID
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_key(cmd, flight_uuid_string, strlen(flight_uuid_string)),
-    //     "Failed to set store command flight key"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_key(cmd, flight_uuid_string, strlen(flight_uuid_string)),
+         "Failed to set store command flight key"
+     );
     // LAB - Upsert - Set the document value
-    // IfLCBFailGotoDone(
-    //     lcb_cmdstore_value(cmd, flight_string, strlen(flight_string)),
-    //     "Failed to set store insert flight document"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdstore_value(cmd, flight_string, strlen(flight_string)),
+         "Failed to set store insert flight document"
+     );
 
     LogDebug("Add new flight booking: (%s) %s", flight_uuid_string, flight_string);
 
@@ -187,10 +187,10 @@ static lcb_STATUS upsert_new_flight(const char *tenant, const char *flight_uuid_
     store_delegate->cookie = (void**)&rc;
     store_delegate->callback = (tcblcb_RESPDELEGATE_CALLBACK)flight_upsert_callback;
     // LAB - Upsert - Store the document 
-    // IfLCBFailGotoDone(
-    //     lcb_store(_tcblcb_lcb_instance, store_delegate, cmd),
-    //     "Failed to schedule user insert command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_store(_tcblcb_lcb_instance, store_delegate, cmd),
+         "Failed to schedule user insert command"
+     );
 
     cmd_scheduled = true;
 
@@ -244,31 +244,31 @@ static lcb_STATUS add_user_booking(tcblcb_UserFlightsParams *user_params, const 
     bool cmd_scheduled = false;
 
     // LAB - Update Subdoc - Create Command
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_create(&cmd),
-    //     "Failed to create subdoc command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_create(&cmd),
+         "Failed to create subdoc command"
+     );
     // ============ Start CB 7 Only ==========
     // LAB - Couchbase 7.0 Only!
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_collection(
-    //         cmd,
-    //         user_params->tenant, strlen(user_params->tenant),
-    //         USERS_COLL_STRING, USERS_COLL_STRLEN),
-    //     "Failed to set subdoc get scope and collection"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_collection(
+             cmd,
+             user_params->tenant, strlen(user_params->tenant),
+             USERS_COLL_STRING, USERS_COLL_STRLEN),
+         "Failed to set subdoc get scope and collection"
+     );
     // ============ End CB 7 Only ==========
     // LAB - Update Subdoc - Specify the Document ID
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_key(cmd, user_params->username, strlen(user_params->username)),
-    //     "Failed to set subdoc key"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_key(cmd, user_params->username, strlen(user_params->username)),
+         "Failed to set subdoc key"
+     );
 
     // LAB - Update Subdoc - Create Subdoc Spec
-    // IfLCBFailGotoDone(
-    //     lcb_subdocspecs_create(&ops, 1),
-    //     "Failed to create subdoc operation specs"
-    // );
+     IfLCBFailGotoDone(
+         lcb_subdocspecs_create(&ops, 1),
+         "Failed to create subdoc operation specs"
+     );
 
     flight_uuid_json_string = create_json_string_param(flight_uuid_string);
     IfNULLGotoDone(
@@ -277,20 +277,20 @@ static lcb_STATUS add_user_booking(tcblcb_UserFlightsParams *user_params, const 
     );
 
     // LAB - Update Subdoc - Specify the Subdoc Field to append to the array
-    // IfLCBFailGotoDone(
-    //     lcb_subdocspecs_array_add_last(
-    //         ops, 0, LCB_SUBDOCSPECS_F_MKINTERMEDIATES,
-    //         BOOKINGS_PATH_STRING, BOOKINGS_PATH_STRLEN,
-    //         flight_uuid_json_string, strlen(flight_uuid_json_string)
-    //     ),
-    //     "Failed to create array add operation for user 'bookings' path"
-    // );
+     IfLCBFailGotoDone(
+         lcb_subdocspecs_array_add_last(
+             ops, 0, LCB_SUBDOCSPECS_F_MKINTERMEDIATES,
+             BOOKINGS_PATH_STRING, BOOKINGS_PATH_STRLEN,
+             flight_uuid_json_string, strlen(flight_uuid_json_string)
+         ),
+         "Failed to create array add operation for user 'bookings' path"
+     );
 
     // LAB - Update Subdoc - Add Subdoc operations to command
-    // IfLCBFailGotoDone(
-    //     lcb_cmdsubdoc_specs(cmd, ops),
-    //     "Failed to add subspec operations for command"
-    // );
+     IfLCBFailGotoDone(
+         lcb_cmdsubdoc_specs(cmd, ops),
+         "Failed to add subspec operations for command"
+     );
 
     LogDebug("Add User Booking: (%s) %s", user_params->username, flight_uuid_json_string);
 
@@ -299,10 +299,10 @@ static lcb_STATUS add_user_booking(tcblcb_UserFlightsParams *user_params, const 
     subdoc_delegate->cookie = (void**)&rc;
     subdoc_delegate->callback = (tcblcb_RESPDELEGATE_CALLBACK)booking_subdoc_callback;
     // LAB - Update Subdoc - Schedule Subdoc operation
-    // IfLCBFailGotoDone(
-    //     lcb_subdoc(_tcblcb_lcb_instance, subdoc_delegate, cmd),
-    //     "Failed to schedule subdoc command"
-    // )
+     IfLCBFailGotoDone(
+         lcb_subdoc(_tcblcb_lcb_instance, subdoc_delegate, cmd),
+         "Failed to schedule subdoc command"
+     )
 
     cmd_scheduled = true;
 

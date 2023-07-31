@@ -226,26 +226,25 @@ void kore_worker_configure()
     bool connected = false;
     lcb_STATUS connection_status;
     // LAB - Couchbase bootstrap - Configure the connection
-    // lcb_CREATEOPTS *create_options = NULL;
-    // lcb_createopts_create(&create_options, LCB_TYPE_CLUSTER);
-    // lcb_createopts_connstr(create_options, _cb_conn_string, _cb_conn_strlen);
-    // lcb_createopts_credentials(
-    //     create_options,
-    //     _cb_user_string, _cb_user_strlen,
-    //     _cb_pswd_string, _cb_pswd_strlen
-    // );
-
+    lcb_CREATEOPTS *create_options = NULL;
+    lcb_createopts_create(&create_options, LCB_TYPE_CLUSTER);
+    lcb_createopts_connstr(create_options, _cb_conn_string, _cb_conn_strlen);
+    lcb_createopts_credentials(
+         create_options,
+         _cb_user_string, _cb_user_strlen,
+         _cb_pswd_string, _cb_pswd_strlen
+    );
     // Note that we're creating the instance as a thread local in the worker threads
     
     // LAB - Couchbase bootstrap - Create the instance
-    // IfLCBFailGotoDone(
-    //     lcb_create(&_tcblcb_lcb_instance, create_options),
-    //     "Failed to create a libcouchbase instance"
-    // );
-    // IfLCBFailLogWarningMsg(
-    //     lcb_createopts_destroy(create_options),
-    //     "Failed to destroy libcouchbase create options"
-    // );
+    IfLCBFailGotoDone(
+         lcb_create(&_tcblcb_lcb_instance, create_options),
+         "Failed to create a libcouchbase instance"
+    );
+    IfLCBFailLogWarningMsg(
+         lcb_createopts_destroy(create_options),
+         "Failed to destroy libcouchbase create options"
+    );
     IfNULLGotoDone(
         _tcblcb_lcb_instance,
         "libcouchbase instance is NULL"
@@ -253,10 +252,10 @@ void kore_worker_configure()
 
     // LAB - Couchbase bootstrap - Connect to the cluster
     // schedule the initial connect operation
-    // IfLCBFailGotoDone(
-    //     lcb_connect(_tcblcb_lcb_instance),
-    //     "Failed to schedule the Couchbase connect operation"
-    // );
+    IfLCBFailGotoDone(
+         lcb_connect(_tcblcb_lcb_instance),
+         "Failed to schedule the Couchbase connect operation"
+    );
 
     // wait for the initial connect operation to complete
     IfLCBFailGotoDone(
@@ -266,25 +265,25 @@ void kore_worker_configure()
 
     // LAB - Couchbase bootstrap - Check the bootstrap status
     // confirm the resulting bootstrap status
-    // IfLCBFailGotoDone(
-    //     lcb_get_bootstrap_status(_tcblcb_lcb_instance),
-    //     "Couchbase bootstrap failed"
-    // );
+    IfLCBFailGotoDone(
+         lcb_get_bootstrap_status(_tcblcb_lcb_instance),
+         "Couchbase bootstrap failed"
+    );
 
     // LAB - Couchbase bootstrap - Install callbacks
     // install any global callbacks that are needed to delegate to other logic
-    // lcb_set_open_callback(_tcblcb_lcb_instance, open_callback);
-    // lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_GET, (lcb_RESPCALLBACK)get_callback);
-    // lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_STORE, (lcb_RESPCALLBACK)store_callback);
-    // lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_SDLOOKUP, (lcb_RESPCALLBACK)subdoc_callback);
-    // lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_SDMUTATE, (lcb_RESPCALLBACK)subdoc_callback);
+    lcb_set_open_callback(_tcblcb_lcb_instance, open_callback);
+    lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_GET, (lcb_RESPCALLBACK)get_callback);
+    lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_STORE, (lcb_RESPCALLBACK)store_callback);
+    lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_SDLOOKUP, (lcb_RESPCALLBACK)subdoc_callback);
+    lcb_install_callback(_tcblcb_lcb_instance, LCB_CALLBACK_SDMUTATE, (lcb_RESPCALLBACK)subdoc_callback);
 
     // LAB - Couchbase bootstrap - Open bucket
     // schedule an open bucket operation
-    // IfLCBFailGotoDone(
-    //     connection_status = lcb_open(_tcblcb_lcb_instance, TRAVEL_BUCKET_STRING, TRAVEL_BUCKET_STRLEN),
-    //     "Failed to schedule the open bucket operation"
-    // );
+     IfLCBFailGotoDone(
+         connection_status = lcb_open(_tcblcb_lcb_instance, TRAVEL_BUCKET_STRING, TRAVEL_BUCKET_STRLEN),
+         "Failed to schedule the open bucket operation"
+    );
 
     // wait for the open bucket operation to complete
     IfLCBFailGotoDone(
